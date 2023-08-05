@@ -1,0 +1,32 @@
+/* .slick-slide {
+  max-width: 992px;
+  width: 100% !important;
+  width: auto;
+} */
+
+/* .slick-slide,
+.slick-slider,
+.slick-list,
+.slick-track,
+.slick-slide > div {
+  height: 100% !important;
+}
+
+@media screen and (max-width: 1024px) {
+  .slick-slider {
+    height: 50% !important;
+  }
+} */
+.slick-slider,
+.slick-list,
+.slick-track,
+.slick-slide {
+  height: 100% !important;
+}
+
+.slick-slide > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
