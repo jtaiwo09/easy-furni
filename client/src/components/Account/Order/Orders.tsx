@@ -5,19 +5,21 @@ import Button from "@mui/material/Button";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { DataGrid } from "@mui/x-data-grid";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { getAllUsersOrders } from "@/redux/slices/orderSlice";
+// import { getAllUsersOrders } from "@/redux/slices/orderSlice";
 import { currencyConverter } from "@/utils/helperFunc";
+import { getAllUsersOrders } from "@/services/swr/order";
+import Loader from "@/components/Layout/Loader";
 
 function Orders() {
   const { user } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-  const { orders } = useAppSelector((state) => state.orders);
+  // const { orders } = useAppSelector((state) => state.orders);
 
-  useEffect(() => {
-    if (user) {
-      dispatch(getAllUsersOrders(user._id));
-    }
-  }, [user]);
+  const { data, error, isLoading } = getAllUsersOrders(user?._id);
+
+  if (isLoading) return <Loader />;
+
+  const orders = data.orders;
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -69,6 +71,8 @@ function Orders() {
   ];
 
   const row: any = [];
+
+  console.log(123, orders);
 
   orders &&
     orders.forEach((item: any) => {
