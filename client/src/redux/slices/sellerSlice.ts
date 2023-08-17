@@ -1,10 +1,6 @@
 import { SellerLoginFormData } from "@/app/(auth)/shop-login/page";
 import { loginSeller, logoutSeller } from "@/services/auth";
-import {
-  deleteSellerAdminApi,
-  getAllSellerAdminApi,
-  getSellerApi,
-} from "@/services/seller";
+import { getSellerApi } from "@/services/seller";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface SellerState {
