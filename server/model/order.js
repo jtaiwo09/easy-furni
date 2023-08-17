@@ -13,6 +13,10 @@ const orderSchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
+  shopId: {
+    type: String,
+    required: true,
+  },
   totalPrice: {
     type: Number,
     required: true,
@@ -31,10 +35,16 @@ const orderSchema = new mongoose.Schema({
     type: {
       type: String,
     },
+    ref: {
+      type: String,
+    },
+    paid: {
+      type: Boolean,
+      default: false,
+    },
   },
   paidAt: {
     type: Date,
-    default: Date.now(),
   },
   deliveredAt: {
     type: Date,

@@ -9,8 +9,9 @@ const jwt = require("jsonwebtoken");
 const sendToken = require("../utils/jwtToken");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const sendMail = require("../utils/sendMail");
-const { isAuthenticated } = require("../middlewares/auth");
+const { isAuthenticated, isAdmin } = require("../middlewares/auth");
 const cloudinary = require("cloudinary").v2;
+const { filter } = require("../utils");
 
 // create user
 router.post("/create-user", async (req, res, next) => {
@@ -41,11 +42,16 @@ router.post("/create-user", async (req, res, next) => {
     const activationUrl = `${process.env.BASE_URL}/activation/${activationToken}`;
 
     try {
-      await sendMail({
+      const options = {
         email: user.email,
         subject: "Activate your account",
-        message: `Hello ${user.name}, please click on the link to activate your account: ${activationUrl}`,
-      });
+        template: "signup_email",
+        context: {
+          name: user.name,
+          activationUrl: activationUrl,
+        },
+      };
+      await sendMail(options);
       return res.status(200).json({
         success: true,
         message: `please check your email:- ${user.email} to activate your account!`,
@@ -417,6 +423,27 @@ router.delete(
       const user = await User.findById(userId);
 
       res.status(200).json({ success: true, user });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// all users --- for admin
+router.get(
+  "/admin-all-users",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { query, count, totalPages } = await filter(req, User);
+      const users = await query;
+      res.status(201).json({
+        success: true,
+        users,
+        totalRecord: count,
+        totalPages,
+      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

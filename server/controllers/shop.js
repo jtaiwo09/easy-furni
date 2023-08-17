@@ -6,9 +6,9 @@ const sendMail = require("../utils/sendMail");
 const cloudinary = require("cloudinary").v2;
 const ErrorHandler = require("../utils/ErrorHandler");
 const sendShopToken = require("../utils/shopToken");
-
 const Shop = require("../model/shop");
-const { isSeller } = require("../middlewares/auth");
+const { isSeller, isAuthenticated, isAdmin } = require("../middlewares/auth");
+const { filter } = require("../utils");
 
 // create user shop
 router.post(
@@ -42,11 +42,16 @@ router.post(
       const activationUrl = `${process.env.BASE_URL}/activation/seller/${activationToken}`;
 
       try {
-        await sendMail({
+        const options = {
           email: seller.email,
           subject: "Activate your account",
-          message: `Hello ${seller.name}, please click on the link to activate your account: ${activationUrl}`,
-        });
+          template: "signup_email",
+          context: {
+            name: seller.name,
+            activationUrl: activationUrl,
+          },
+        };
+        await sendMail(options);
         return res.status(200).json({
           success: true,
           message: `please check your email:- ${seller.email} to activate your account!`,
@@ -150,10 +155,202 @@ router.get(
       if (!seller) {
         return next(new ErrorHandler("User doesn't exists", 400));
       }
-
       res.status(200).json({
         success: true,
         seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// update shop profile picture
+router.put(
+  "/update-shop-avatar",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      let existsSeller = await Shop.findById(req.seller._id);
+
+      const imageId = existsSeller.avatar.public_id;
+
+      await cloudinary.uploader.destroy(imageId);
+
+      const myCloud = await cloudinary.uploader.upload(req.body.avatar, {
+        folder: "avatars",
+        width: 150,
+      });
+
+      existsSeller.avatar = {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      };
+
+      await existsSeller.save();
+
+      res.status(200).json({
+        success: true,
+        seller: existsSeller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// update seller info -- seller
+router.put(
+  "/update-seller-info",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const shop = await Shop.findByIdAndUpdate(
+        req.seller._id,
+        {
+          $set: req.body,
+        },
+        { new: true }
+      );
+
+      if (!shop) {
+        return next(new ErrorHandler("User not found", 400));
+      }
+
+      res.status(201).json({
+        success: true,
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// update seller info -- admin
+router.put(
+  "/update-seller-info/:id",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const shop = await Shop.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: req.body,
+        },
+        { new: true }
+      );
+
+      if (!shop) {
+        return next(new ErrorHandler("User not found", 400));
+      }
+
+      res.status(201).json({
+        success: true,
+        shop,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// update seller withdraw methods --- sellers
+router.put(
+  "/update-payment-methods",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { withdrawMethod } = req.body;
+
+      const seller = await Shop.findByIdAndUpdate(
+        req.seller._id,
+        {
+          withdrawMethod,
+        },
+        { new: true }
+      );
+
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// delete seller withdraw methods --- only seller
+router.delete(
+  "/delete-withdraw-method",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.seller._id);
+
+      if (!seller) {
+        return next(new ErrorHandler("Seller not found with this id", 400));
+      }
+
+      seller.withdrawMethod = null;
+
+      await seller.save();
+
+      res.status(201).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// all sellers --- for admin
+router.get(
+  "/admin-all-sellers",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { query, count, totalPages } = await filter(req, Shop);
+
+      const sellers = await query;
+
+      res.status(201).json({
+        success: true,
+        sellers,
+        totalRecord: count,
+        totalPages,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// delete seller ---admin
+router.delete(
+  "/delete-seller/:id",
+  isAuthenticated,
+  isAdmin("Admin"),
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.params.id);
+
+      if (!seller) {
+        return next(
+          new ErrorHandler("Seller is not available with this id", 400)
+        );
+      }
+
+      await Shop.findByIdAndDelete(req.params.id);
+
+      res.status(201).json({
+        success: true,
+        message: "Seller deleted successfully!",
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));

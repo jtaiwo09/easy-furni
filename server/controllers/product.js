@@ -5,6 +5,7 @@ const Product = require("../model/product");
 const Order = require("../model/order");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isAuthenticated } = require("../middlewares/auth");
+const { filter } = require("../utils");
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
 
@@ -61,11 +62,17 @@ router.get(
   "/get-all-products-shop/:id",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const products = await Product.find({ shopId: req.params.id });
+      const { query, count, totalPages } = await filter(req, Product, {
+        shopId: req.params.id,
+      });
+
+      const products = await query;
 
       res.status(201).json({
         success: true,
         products,
+        totalRecord: count,
+        totalPages,
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
@@ -95,20 +102,24 @@ router.get(
 router.get(
   "/get-all-products",
   catchAsyncErrors(async (req, res, next) => {
-    const cat = req.query.category
-      ? {
-          category: {
-            $regex: req.query.category,
-            $options: "i",
-          },
-        }
-      : {};
     try {
-      const products = await Product.find({ ...cat }).sort({ createdAt: -1 });
+      const { query, count, totalPages } = await filter(req, Product);
+
+      // Add $ to query;
+      // let queryStr = JSON.stringify(queryObj).replace(
+      //   /\b(gte|gt|lte|lt)\b/g,
+      //   (match) => `$${match}`
+      // );
+
+      // queryStr = JSON.parse(queryStr);
+
+      const products = await query;
 
       res.status(201).json({
         success: true,
         products,
+        totalRecord: count,
+        totalPages,
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
