@@ -1,7 +1,7 @@
 "use client";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import React from "react";
-import { createTheme } from "@mui/material/styles";
+import createTheme from "@mui/material/styles/createTheme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { store } from "@/redux/store";

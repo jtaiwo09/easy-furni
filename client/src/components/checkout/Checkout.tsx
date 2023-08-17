@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "../form/TextField";
 import { useForm } from "react-hook-form";
 import { useAppSelector } from "@/redux/hook";
@@ -9,8 +9,8 @@ import CountrySelect from "../form/CountrySelect";
 import StateSelect from "../form/SateSelect";
 import { toast } from "react-toastify";
 import CustomButton from "../form/CustomButton";
-import Coupon from "./Coupon";
 import { useRouter } from "next/navigation";
+import CartSummary from "./CartSummary";
 
 export interface CheckoutFormData {
   name: string;
@@ -41,8 +41,11 @@ function Checkout() {
   const { cart } = useAppSelector((state) => state.cart);
   const [couponCodeData, setCouponCodeData] = useState(null);
   const [discountPrice, setDiscountPrice] = useState(null);
+  const [orderData, setOrderData] = useState<any>(null);
+  const [couponCode, setCouponCode] = useState("");
 
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -83,6 +86,7 @@ function Checkout() {
         setValue("country", defaultAddress.country);
         setValue("state", defaultAddress.state);
       } else {
+        router.push("/address");
         toast.error("Please set a default address");
       }
     } else {
@@ -103,8 +107,19 @@ function Checkout() {
 
   // Total price
   const totalPrice = couponCodeData
-    ? (subTotalPrice + shipping - discountPercentenge).toFixed(2)
-    : parseFloat((subTotalPrice + shipping).toFixed(2));
+    ? subTotalPrice + shipping - discountPercentenge
+    : parseFloat((subTotalPrice + shipping).toString());
+
+  useEffect(() => {
+    setOrderData({
+      totalPrice,
+      shipping,
+      subTotalPrice,
+      couponCode,
+      setCouponCode,
+      discountPercentenge,
+    });
+  }, []);
 
   const handleCheckout = (data: CheckoutFormData) => {
     const orderData = {
@@ -193,7 +208,7 @@ function Checkout() {
             </div>
           </div>
           <div className="lg:hidden mt-5">
-            <Coupon />
+            <CartSummary orderData={orderData} />
           </div>
           <CustomButton
             type="submit"
@@ -203,7 +218,7 @@ function Checkout() {
         </form>
       </div>
       <div className="hidden lg:block w-full lg:w-[30%]">
-        <Coupon />
+        <CartSummary orderData={orderData} />
       </div>
     </div>
   );

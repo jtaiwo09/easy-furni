@@ -1,9 +1,29 @@
 import React, { useState } from "react";
-import CustomButton from "../form/CustomButton";
 import { BiLoader } from "react-icons/bi";
+import { PaystackButton } from "react-paystack";
 
-function PaymentInfo({ user, cashOnDeliveryHandler, loading }: any) {
+interface IProps {
+  cashOnDeliveryHandler: any;
+  loading: boolean;
+  order: any;
+  paystackPaymentHandler: any;
+}
+
+function PaymentInfo({
+  cashOnDeliveryHandler,
+  loading,
+  order,
+  paystackPaymentHandler,
+}: IProps) {
   const [select, setSelect] = useState(1);
+  const options = {
+    email: order?.user?.email,
+    // amount: order.totalPrice * 100,
+    amount: 20 * 100,
+    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_SECRET_PUBLIC ?? "",
+    text: "Pay Now",
+    onSuccess: paystackPaymentHandler,
+  };
   return (
     <div className="w-full bg-white rounded-md p-5">
       <div>
@@ -22,12 +42,10 @@ function PaymentInfo({ user, cashOnDeliveryHandler, loading }: any) {
         </div>
         {select === 1 ? (
           <div className="w-full flex border-b">
-            <div
-              className={`w-[150px] my-4 flex items-center justify-center bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
-            >
-              Pay Now
-            </div>
-            {/* <CustomButton text="Pay now" extraClass="my-4" /> */}
+            <PaystackButton
+              className="w-[150px] my-4 flex items-center justify-center bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]"
+              {...options}
+            />
           </div>
         ) : null}
       </div>

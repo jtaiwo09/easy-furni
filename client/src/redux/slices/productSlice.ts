@@ -6,6 +6,7 @@ export interface ProductState {
   error: any;
   product: any;
   allProducts: any;
+  showFilter: boolean;
 }
 
 const initialState: ProductState = {
@@ -13,6 +14,7 @@ const initialState: ProductState = {
   error: null,
   product: null,
   allProducts: [],
+  showFilter: false,
 };
 
 export const createProduct = createAsyncThunk(
@@ -29,7 +31,11 @@ export const createProduct = createAsyncThunk(
 export const productSlice = createSlice({
   name: "seller",
   initialState,
-  reducers: {},
+  reducers: {
+    toggleFilter: (state) => {
+      state.showFilter = !state.showFilter;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createProduct.pending, (state) => {
@@ -48,4 +54,5 @@ export const productSlice = createSlice({
   },
 });
 
+export const { toggleFilter } = productSlice.actions;
 export default productSlice.reducer;

@@ -85,6 +85,7 @@ function ProductReview({
                       <Rating
                         name="read-only"
                         value={review.rating}
+                        precision={0.5}
                         readOnly
                         size="medium"
                         className="ml-4"

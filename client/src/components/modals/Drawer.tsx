@@ -38,12 +38,14 @@ function Drawer({
         className="relative"
       >
         {showCloseBtn ? (
-          <IconButton
+          <button
+            className={`w-10 h-10 flex justify-center items-center rounded-full absolute top-2 ${
+              anchor === "left" ? "right-2" : "left-2"
+            }`}
             onClick={toggleModal}
-            className="absolute top-2 right-2 z-[999]"
           >
-            <MdClose />
-          </IconButton>
+            <MdClose className="text-xl " />
+          </button>
         ) : null}
 
         {children}

@@ -20,8 +20,8 @@ function ProductItem({
   const dispatch = useAppDispatch();
 
   const increment = () => {
-    if (product.stock < value) {
-      toast.error("Product stock limited!");
+    if (product.stock <= value) {
+      toast.error("Product is out of stock");
     } else {
       setValue(value + 1);
       const updateCartData = { ...product, qty: value + 1 };
@@ -44,7 +44,7 @@ function ProductItem({
 
   const handleAddToCart = () => {
     if (product.stock < 1) {
-      toast.error("Product stock limited!");
+      toast.error("Product is out of stock");
     } else {
       const updateCartData = { ...product, qty: 1 };
       dispatch(addToCart(updateCartData));

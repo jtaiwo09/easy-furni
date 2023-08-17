@@ -6,15 +6,14 @@ import {
   AiOutlineHeart,
   AiOutlineSend,
 } from "react-icons/ai";
-import { BsCart3 } from "react-icons/bs";
+import { BsBagCheckFill, BsCart3 } from "react-icons/bs";
 import CustomModal from "./CustomModal";
 import Slider from "react-slick";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-import { BsStar, BsStarFill } from "react-icons/bs";
 import Link from "next/link";
 import CustomButton from "./form/CustomButton";
 import QtyButton from "./QtyButton";
-import { currencyConverter } from "@/utils/helperFunc";
+import { currencyConverter, truncate } from "@/utils/helperFunc";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
@@ -23,6 +22,7 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "@/redux/slices/wishlistSlice";
+import Rating from "@mui/material/Rating";
 
 function Product({ data }: { data: Product }) {
   const [open, setOpen] = useState(false);
@@ -72,7 +72,7 @@ function Product({ data }: { data: Product }) {
       toast.info("Item removed from cart!");
     } else {
       if (data.stock < 1) {
-        toast.error("Product stock limited!");
+        toast.error("Product is out of stock");
       } else {
         const cartData = { ...data, qty: 1 };
         dispatch(addToCart(cartData));
@@ -108,7 +108,7 @@ function Product({ data }: { data: Product }) {
   return (
     <div className="relative pr-2 mb-5">
       <div className="overflow-hidden relative group/icons bg-[#F4F4F4] p-5 h-[280px]">
-        <span className="inline-block text-center text-sm w-14 py-0.5 text-white bg-[#9E0A0F] absolute top-2 right-2 z-20">
+        <span className="inline-block text-center text-sm w-14 py-0.5 text-white bg-[#9E0A0F] absolute top-2 right-2 z-[2]">
           {perDiscount()}
         </span>
         <Link href={`/product/${data._id}`}>
@@ -123,7 +123,7 @@ function Product({ data }: { data: Product }) {
             onClick={handleClick}
             className="relative group mb-2.5 translate-y-14 opacity-0 group-hover/icons:opacity-100 group-hover/icons:translate-y-0 group-hover/icons:delay-[.2s] duration-[0.6s]"
           >
-            <div className="w-10 h-10 border bg-white border-[#323232] center cursor-pointer z-[2] bg-transparent">
+            <div className="w-10 h-10 border bg-white border-[#323232] center cursor-pointer bg-transparent">
               <AiOutlineEye className="text-xl z-10 group-hover:text-white transition-all duration-5[1s]delay-200" />
             </div>
             <div className="absolute overflow-hidden cursor-pointer top-0 right-0 bg-primary group-hover:w-[150px] h-full w-0 transition-all duration-500">
@@ -136,7 +136,7 @@ function Product({ data }: { data: Product }) {
             onClick={handleWishlist}
             className="relative group mb-2.5 translate-y-14 opacity-0 group-hover/icons:opacity-100 group-hover/icons:translate-y-0 group-hover/icons:delay-[.3s] duration-[0.6s]"
           >
-            <div className="w-10 h-10 border bg-white border-[#323232] center cursor-pointer z-[2] bg-transparent">
+            <div className="w-10 h-10 border bg-white border-[#323232] center cursor-pointer bg-transparent">
               {itemInWishlist() ? (
                 <AiFillHeart className="text-xl z-10 group-hover:text-white transition-all duration-500 delay-200" />
               ) : (
@@ -153,7 +153,7 @@ function Product({ data }: { data: Product }) {
             onClick={() => handleCart(data._id)}
             className="relative group mb-2.5 translate-y-14 opacity-0 group-hover/icons:opacity-100 group-hover/icons:translate-y-0 group-hover/icons:delay-[.4s] duration-[0.6s]"
           >
-            <div className="w-10 h-10 border bg-white border-[#323232] center cursor-pointer z-[2] bg-transparent">
+            <div className="w-10 h-10 border bg-white border-[#323232] center cursor-pointer bg-transparent">
               {itemInCart() ? (
                 <HiOutlineCheckCircle className="text-xl z-10 group-hover:text-white transition-all duration-500 delay-200" />
               ) : (
@@ -168,27 +168,67 @@ function Product({ data }: { data: Product }) {
           </div>
         </div>
       </div>
-      <div className="text-center mt-[22px] text-primary group hover:!text-text-hover">
+      <div className="px-4 mt-[22px] text-primary group hover:!text-text-hover">
         <Link
           href={`/product/${data._id}`}
-          className="mb-1.5 leading-[20px] text-inherit block truncate group-hover:font-semibold"
+          className="leading-[20px] text-inherit block truncate font-semibold"
         >
-          {data.name}
+          {truncate(data.name, 40)}
         </Link>
-        <p className="">
-          <span className="px-1.5 text-primary/40 line-through leading-5">
+        <p className="my-2 flex flex-wrap gap-y-3">
+          <span className="text-inherit leading-5 font-semibold mr-3">
             {currencyConverter(data.discountPrice)}
           </span>
-          <span className="px-1.5 text-inherit leading-5">
+          <sup className="text-red-500 line-through leading-5 text-sm tracking-tight ">
             {currencyConverter(data.originalPrice)}
-          </span>
+          </sup>
         </p>
-        <div className="flex lg:hidden gap-3 justify-center mt-2">
-          <button className="w-[40px] h-[40px] center border border-[#d7d7d7] rounded-[5px]">
-            <AiOutlineHeart className="text-[18px]" />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Rating
+            name="read-only"
+            value={data?.ratings ?? null}
+            precision={0.5}
+            readOnly
+            size="small"
+            className=""
+          />
+          {data.stock < 1 ? (
+            <span className="text-red-600 font-semibold text-sm">
+              Out of Stock
+            </span>
+          ) : (
+            <p className="text-green-500 font-medium text-sm">
+              {data.sold_out} sold {""}
+              <span className={`${data.stock < 3 && "text-red-500"}`}>
+                ({data.stock}) left
+              </span>
+            </p>
+          )}
+        </div>
+        <div className="flex lg:hidden gap-3 justify-center mt-3">
+          <button
+            onClick={handleWishlist}
+            className={`${
+              itemInWishlist()
+                ? "border-text-hover text-text-hover"
+                : "border-[#d7d7d7]"
+            } w-[40px] h-[40px] text-lg center border hover:border-text-hover rounded-[5px]`}
+          >
+            {itemInWishlist() ? (
+              <AiFillHeart className="text-text-hover" />
+            ) : (
+              <AiOutlineHeart />
+            )}
           </button>
-          <button className="w-[40px] h-[40px] center border border-[#d7d7d7] rounded-[5px]">
-            <BsCart3 className="text-[18px]" />
+          <button
+            onClick={() => handleCart(data._id)}
+            className={`${
+              itemInCart()
+                ? "border-text-hover text-text-hover"
+                : "border-[#d7d7d7]"
+            } w-[40px] h-[40px] text-lg center border hover:border-text-hover rounded-[5px]`}
+          >
+            {itemInCart() ? <BsBagCheckFill /> : <BsCart3 />}
           </button>
         </div>
       </div>
@@ -235,15 +275,17 @@ function Product({ data }: { data: Product }) {
             </div>
           </div>
           <div className="flex-1 w-full md:w-1/2 bg-white overflow-scroll mt-5">
-            <div className="px-[35px]">
+            <div className="sm:px-[35px]">
               <div className="mb-[30px] flex gap-5 items-center">
                 <div className="text-primary flex gap-1">
-                  {Array.from({ length: data.rating }, (_, i) => (
-                    <BsStarFill key={i} />
-                  ))}
-                  {Array.from({ length: 5 - data.rating }, (_, i) => (
-                    <BsStar key={i} />
-                  ))}
+                  <Rating
+                    name="read-only"
+                    value={data?.ratings ?? null}
+                    precision={0.5}
+                    readOnly
+                    size="medium"
+                    className=""
+                  />
                 </div>
                 <Link href="#" className="underline decoration-1 text-primary">
                   {data.reviews.length < 1 ? "No" : data.reviews.length} reviews
@@ -251,17 +293,17 @@ function Product({ data }: { data: Product }) {
               </div>
               <div className="text-primary">
                 <Link
-                  href="#"
+                  href={`product/${data._id}`}
                   className="block text-2xl font-medium text-inherit mb-5"
                 >
                   {data.name}
                 </Link>
-                <div className="flex items-center mb-5 text-base font-semibold">
+                <div className="flex items-center mb-5 text-lg font-semibold">
                   <p className="mr-4">
-                    {currencyConverter(data.originalPrice)}
+                    {currencyConverter(data.discountPrice)}
                   </p>
                   <sup className="line-through text-red-400 text-sm ">
-                    {currencyConverter(data.discountPrice)}
+                    {currencyConverter(data.originalPrice)}
                   </sup>
                 </div>
                 <p
@@ -269,13 +311,21 @@ function Product({ data }: { data: Product }) {
                   dangerouslySetInnerHTML={{ __html: data.description }}
                 ></p>
                 <div className="mb-[27px]">
-                  <QtyButton />
+                  <QtyButton data={data} itemInCart={itemInCart} />
+                  {data.stock < 1 ? (
+                    <p className="text-red-500 mt-2 font-medium text-sm">
+                      Out of stock
+                    </p>
+                  ) : null}
                 </div>
-                <div className="mb-2">
-                  <p className="mb-2.5">SKU: Ch002</p>
-                  <p className="mb-2.5">Categories: {data.category}</p>
-                  <p className="mb-2.5">
-                    Tags: {data.tags ? data.tags.split(" ").join(", ") : null}
+                <div className="mb-3">
+                  <p className="mb-2">
+                    <span className="font-medium">Categories: </span>{" "}
+                    {data.category}
+                  </p>
+                  <p>
+                    <span className="font-medium">Tags: </span>
+                    {data.tags ? data.tags.split(" ").join(", ") : null}
                   </p>
                 </div>
                 <div className="">
@@ -300,9 +350,20 @@ function Product({ data }: { data: Product }) {
                   <CustomButton text="Send message">
                     <AiOutlineSend className="text-lg ml-2" />
                   </CustomButton>
-                  <p className="text-red-400 font-medium mt-4 text-sm">
-                    ({data.sold_out}) sold out
-                  </p>
+                  <div className="mt-3">
+                    {data.stock < 1 ? (
+                      <span className="text-red-600 font-semibold text-sm">
+                        Out of Stock
+                      </span>
+                    ) : (
+                      <p className="text-green-500 font-medium text-sm">
+                        {data.sold_out} sold {""}
+                        <span className={`${data.stock < 3 && "text-red-500"}`}>
+                          ({data.stock}) left
+                        </span>
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

@@ -25,14 +25,14 @@ export const getAllUsersOrdersApi = async (userId: string) => {
   return await res;
 };
 
-export const requestRefundApi = async (id: string) => {
-  const res = await fetch(`${baseUrl}/order/order-refund/${id}`, {
+export const requestRefundApi = async (data: any) => {
+  const res = await fetch(`${baseUrl}/order/order-refund`, {
     method: "PUT",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ status: "Processing refund" }),
+    body: JSON.stringify(data),
   });
   return await res.json();
 };

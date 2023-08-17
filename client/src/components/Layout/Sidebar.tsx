@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   BsChatLeftDots,
   BsChevronLeft,
@@ -7,35 +7,25 @@ import {
   BsLock,
   BsPerson,
 } from "react-icons/bs";
-import { MdOutlineTrackChanges } from "react-icons/md";
+import { RiAdminLine } from "react-icons/ri";
 import { FaRegAddressBook } from "react-icons/fa";
 import { AiOutlineLogin } from "react-icons/ai";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { toast } from "react-toastify";
-import { useAppDispatch } from "@/redux/hook";
-import { logoutUser } from "@/services/auth";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { logout } from "@/redux/slices/userSlice";
 import { HiOutlineReceiptRefund } from "react-icons/hi";
+import Link from "next/link";
 
 interface IProp {
   extraClass?: string;
 }
 function Sidebar({ extraClass }: IProp) {
   const [open, setOpen] = useState(true);
+  const { user } = useAppSelector((state) => state.user);
 
   const dispatch = useAppDispatch();
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
-  const tab = searchParams.get("tab");
-
-  const handleRoute = (str: string) => {
-    if (str) {
-      router.push(`/profile?tab=${str}`);
-    } else {
-      router.push(`/profile`);
-    }
-  };
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     dispatch(logout())
@@ -43,13 +33,52 @@ function Sidebar({ extraClass }: IProp) {
       .then((res) => {
         if (res?.success) {
           toast.success(res.message);
-          router.push("/");
+          window.location.href = "/";
         }
       })
       .catch((error) => {
         toast.error(error.message);
       });
   };
+  const currentPath = useCallback(
+    (path: string) => {
+      return pathname === path ? "text-text-hover font-semibold" : "";
+    },
+    [pathname]
+  );
+
+  const nav = [
+    {
+      href: "/profile",
+      icon: BsPerson,
+      text: "Profile",
+    },
+    {
+      href: "/orders",
+      icon: BsHandbag,
+      text: "Orders",
+    },
+    {
+      href: "/inbox",
+      icon: BsChatLeftDots,
+      text: "Inbox",
+    },
+    {
+      href: "/refund",
+      icon: HiOutlineReceiptRefund,
+      text: "Refund",
+    },
+    {
+      href: "/change-password",
+      icon: BsLock,
+      text: "Change Password",
+    },
+    {
+      href: "/address",
+      icon: FaRegAddressBook,
+      text: "Address",
+    },
+  ];
   return (
     <div
       className={`hidden sm:block relative shadow-sm rounded-sm border border-borderCol bg-white h-fit ${extraClass}`}
@@ -67,104 +96,47 @@ function Sidebar({ extraClass }: IProp) {
         </div>
       </div>
       <ul className="mt-2 px-4 pb-5">
-        <li
-          onClick={() => handleRoute("")}
-          className={`flex items-center py-2.5 hover:text-text-hover cursor-pointer ${
-            !tab && "text-text-hover font-semibold"
-          }`}
-        >
-          <BsPerson className="text-xl" />
-          {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
-              Profile
-            </span>
-          ) : null}
-        </li>
-        <li
-          onClick={() => handleRoute("orders")}
-          className={`flex items-center py-2.5 hover:text-text-hover cursor-pointer ${
-            tab === "orders" && "text-text-hover font-semibold"
-          }`}
-        >
-          <BsHandbag className="text-xl" />
-          {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
-              Orders
-            </span>
-          ) : null}
-        </li>
-        <li
-          onClick={() => handleRoute("inbox")}
-          className={`flex items-center py-2.5 hover:text-text-hover cursor-pointer ${
-            tab === "inbox" && "text-text-hover font-semibold"
-          }`}
-        >
-          <BsChatLeftDots className="text-xl" />
-          {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
-              Inbox
-            </span>
-          ) : null}
-        </li>
-        <li
-          onClick={() => handleRoute("track-order")}
-          className={`flex items-center py-2.5 hover:text-text-hover cursor-pointer ${
-            tab === "track-order" && "text-text-hover font-semibold"
-          }`}
-        >
-          <MdOutlineTrackChanges className="text-xl" />
-          {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
-              Track Order
-            </span>
-          ) : null}
-        </li>
-        <li
-          onClick={() => handleRoute("refund")}
-          className={`flex items-center py-2.5 hover:text-text-hover cursor-pointer ${
-            tab === "refund" && "text-text-hover font-semibold"
-          }`}
-        >
-          <HiOutlineReceiptRefund className="text-xl" />
-          {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
-              Refund
-            </span>
-          ) : null}
-        </li>
-        <li
-          onClick={() => handleRoute("change-password")}
-          className={`flex items-center py-2.5 hover:text-text-hover cursor-pointer ${
-            tab === "change-password" && "text-text-hover font-semibold"
-          }`}
-        >
-          <BsLock className="text-xl" />
-          {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
-              Change Password
-            </span>
-          ) : null}
-        </li>
-        <li
-          onClick={() => handleRoute("address")}
-          className={`flex items-center py-2.5 hover:text-text-hover cursor-pointer ${
-            tab === "address" && "text-text-hover font-semibold"
-          }`}
-        >
-          <FaRegAddressBook className="text-xl" />
-          {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
-              Address
-            </span>
-          ) : null}
-        </li>
+        {nav.map((item, i) => (
+          <li key={i}>
+            <Link
+              href={item.href}
+              className={`flex items-center font-medium py-2.5 hover:text-text-hover cursor-pointer ${currentPath(
+                item.href
+              )}`}
+            >
+              <item.icon className="text-xl" />
+              {open ? (
+                <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
+                  {item.text}
+                </span>
+              ) : null}
+            </Link>
+          </li>
+        ))}
+        {user && user.role === "Admin" ? (
+          <li>
+            <Link
+              href="/admin-dashboard"
+              className={`flex items-center font-medium py-2.5 hover:text-text-hover cursor-pointer ${currentPath(
+                "/admin-dashboard"
+              )}`}
+            >
+              <RiAdminLine className="text-xl" />
+              {open ? (
+                <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
+                  Admin Dashboard
+                </span>
+              ) : null}
+            </Link>
+          </li>
+        ) : null}
         <li
           onClick={handleLogout}
           className="flex items-center py-2.5 hover:text-text-hover cursor-pointer"
         >
           <AiOutlineLogin className="text-xl" />
           {open ? (
-            <span className="inline-block ml-3 min-w-[200px] whitespace-nowrap">
+            <span className="inline-block ml-3 font-medium min-w-[200px] whitespace-nowrap">
               Log Out
             </span>
           ) : null}

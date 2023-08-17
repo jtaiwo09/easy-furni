@@ -11,14 +11,41 @@ const getSellerApi = async () => {
   }
 };
 
-const getAllOrdersOfShop = async (shopId: string) => {
+const getAllOrdersOfShop = async (shopId: string, page = 1, limit = 10) => {
   try {
-    const res = await fetch(`${baseUrl}/order/get-seller-orders/${shopId}`);
+    const res = await fetch(
+      `${baseUrl}/order/get-seller-orders/${shopId}?page=${page}&limit=${limit}`
+    );
     const result = await res.json();
-    return result.orders;
+    return result;
   } catch (error) {
     return error;
   }
 };
 
-export { getSellerApi, getAllOrdersOfShop };
+// get all sellers --- for admin
+const getAllSellerAdminApi = async (page = 1, limit = 10) => {
+  const res = await fetch(
+    `${baseUrl}/shop/admin-all-sellers?page=${page}&limit=${limit}`,
+    {
+      credentials: "include",
+    }
+  );
+  return res;
+};
+
+// delete seller --- for admin
+const deleteSellerAdminApi = async (userId: string) => {
+  const res = await fetch(`${baseUrl}/shop/delete-seller/${userId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  return res;
+};
+
+export {
+  getSellerApi,
+  getAllOrdersOfShop,
+  getAllSellerAdminApi,
+  deleteSellerAdminApi,
+};

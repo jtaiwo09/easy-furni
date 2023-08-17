@@ -1,11 +1,21 @@
 "use client";
-import { Button } from "@mui/material";
+import CustomPagination from "@/components/Layout/CustomPagination";
+import { getShopProducts } from "@/services/product";
+import { currencyConverter } from "@/utils/helperFunc";
+import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineEye } from "react-icons/ai";
+import { toast } from "react-toastify";
 
-function ProductTable({ rows }: any) {
+function ProductTable({ data, id }: any) {
+  const products = data.products;
+  const [value, setValue] = useState(products);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
     {
@@ -56,14 +66,50 @@ function ProductTable({ rows }: any) {
     },
   ];
 
+  const rows = [] as any;
+
+  value &&
+    value.forEach((item: any) => {
+      rows.push({
+        id: item._id,
+        name: item.name,
+        price: currencyConverter(item.originalPrice),
+        Stock: item.stock,
+        sold: item?.sold_out,
+      });
+    });
+
+  const handleChangePage = async (e: any, page: any) => {
+    setPage(page);
+    setLoading(true);
+    try {
+      const res = await getShopProducts(id, page);
+      setValue(res.products);
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.message);
+    }
+  };
+
   return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      pageSizeOptions={[10, 25, 100]}
-      disableRowSelectionOnClick
-      autoHeight
-    />
+    <>
+      <div className="mt-4 bg-white rounded-md shadow-sm w-full h-full">
+        {loading && <LinearProgress />}
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          pageSizeOptions={[10, 25, 100]}
+          disableRowSelectionOnClick
+          autoHeight
+        />
+      </div>
+      <CustomPagination
+        data={data}
+        handleChangePage={handleChangePage}
+        page={page}
+      />
+    </>
   );
 }
 

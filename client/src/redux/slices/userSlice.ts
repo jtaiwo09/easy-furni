@@ -1,7 +1,7 @@
 import { LoginFormData } from "@/app/(auth)/login/page";
-import { AddressFormData } from "@/components/Account/Address";
-import { ChangePasswordFormData } from "@/components/Account/ChangePassword";
-import { ProfileFormData } from "@/components/Account/Profile";
+import { AddressFormData } from "@/app/(main)/(dashboard)/address/page";
+import { ChangePasswordFormData } from "@/app/(main)/(dashboard)/change-password/page";
+import { ProfileFormData } from "@/app/(main)/(dashboard)/profile/page";
 import { loginUser, logoutUser } from "@/services/auth";
 import {
   deleteUserAddressApi,

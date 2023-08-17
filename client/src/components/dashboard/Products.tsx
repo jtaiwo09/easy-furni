@@ -12,7 +12,7 @@ import { categoriesData } from "@/utils/data";
 import { AiOutlineCloudUpload, AiOutlineEye } from "react-icons/ai";
 import { BiTrashAlt } from "react-icons/bi";
 import ConfirmationModal from "../modals/ConfirmationModal";
-import { FormHelperText } from "@mui/material";
+import FormHelperText from "@mui/material/FormHelperText";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { createProduct } from "@/redux/slices/productSlice";
 import CurrencyTextField from "../form/CurrencyTextField";
@@ -85,7 +85,7 @@ const schema = yup.object().shape({
   // }),
 });
 
-function Products({ rows }: any) {
+function Products({ data, id }: any) {
   const dispatch = useAppDispatch();
   const { seller } = useAppSelector((state) => state.seller);
   const { loading } = useAppSelector((state) => state.product);
@@ -205,9 +205,7 @@ function Products({ rows }: any) {
         <h2 className="text-2xl font-medium">Products</h2>
         <CustomButton text="Create Product" handleClick={toggleModal} />
       </div>
-      <div className="mt-4 bg-white rounded-md shadow-sm w-full h-full">
-        <ProductTable rows={rows} />
-      </div>
+      <ProductTable data={data} id={id} />
       <CustomModal open={open} handleClose={toggleModal}>
         <div>
           <h2 className="text-xl uppercase text-center font-semibold">

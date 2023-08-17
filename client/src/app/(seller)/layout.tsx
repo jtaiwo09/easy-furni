@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import Loading from "./loading";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Layout/dashboard/Navbar";
-import Loader from "@/components/Layout/Loader";
+import "react-widgets/styles.css";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -20,7 +20,7 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = cookies().get("token")?.value ?? null;
+  const token = cookies().get("seller_token")?.value ?? null;
   if (!token) redirect("/shop-login");
   return (
     <html lang="en">

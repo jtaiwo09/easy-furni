@@ -1,3 +1,9 @@
+interface IBank {
+  id: number;
+  name: string;
+  code: string;
+}
+
 interface Product {
   _id: string;
   name: string;
@@ -13,23 +19,7 @@ interface Product {
     _id: string;
   }[];
   shopId: string;
-  shop: {
-    avatar: {
-      public_id: string;
-      url: string;
-    };
-    _id: string;
-    name: string;
-    email: string;
-    address: string;
-    phoneNumber: string;
-    role: "Seller" | "user" | "Admin";
-    availableBalance: number;
-    transections: Array;
-    createdAt: Date;
-    updatedAt: Date;
-    ratings?: any;
-  };
+  shop: Shop;
   sold_out: number;
   reviews: {
     user: User;
@@ -57,7 +47,7 @@ interface User {
     public_id: string;
     url: string;
   };
-  role: "user";
+  role: "user" | "Admin";
   addresses: {
     country: string;
     state: string;
@@ -71,18 +61,37 @@ interface User {
   updatedAt: Date;
 }
 
+interface Shop {
+  avatar: {
+    public_id: string;
+    url: string;
+  };
+  _id: string;
+  name: string;
+  email: string;
+  address: string;
+  phoneNumber: string;
+  description: string;
+  role: "Seller";
+  blocked: boolean;
+  availableBalance: number;
+  transactions: {
+    _id: string;
+    amount: number;
+    updatedAt: Date;
+    status: string;
+  }[];
+  createdAt: Date;
+  updatedAt: Date;
+  ratings?: any;
+}
+
 interface Order {
+  _id?: string;
   cart: IProduct[];
   discountPrice?: number | null;
   shipping: number;
-  shippingAddress: {
-    address: string;
-    country: string;
-    state: string;
-    email: string;
-    name: string;
-    phoneNumber: string;
-  };
+  shippingAddress: Address;
   subTotalPrice?: number;
   totalPrice: number;
   user: User;
@@ -90,8 +99,20 @@ interface Order {
     type: string;
     status?: string;
     id?: string;
+    ref?: string;
+    paid: boolean;
   };
   status?: string;
   createdAt?: Date;
   paidAt?: Date;
+  deliveredAt?: Date;
+}
+
+interface Address {
+  address: string;
+  country: string;
+  state: string;
+  email: string;
+  name: string;
+  phoneNumber: string;
 }

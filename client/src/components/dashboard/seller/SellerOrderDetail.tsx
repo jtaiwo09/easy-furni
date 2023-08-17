@@ -89,31 +89,33 @@ function SellerOrderDetail({ order, id }: { order: Order; id: string }) {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className=" border border-borderCol h-[46px] rounded-none px-5 focus:outline-none w-fit"
+            className=" border border-borderCol h-[46px] w-full sm:min-w-[140px] sm:max-w-fit rounded-none px-5 focus:outline-none"
           >
-            {[
-              "Processing",
-              "Transferred to delivery partner",
-              "Shipping",
-              "Received",
-              "On the way",
-              "Delivered",
-            ]
-              .slice(
-                [
-                  "Processing",
-                  "Transferred to delivery partner",
-                  "Shipping",
-                  "Received",
-                  "On the way",
-                  "Delivered",
-                ].indexOf(order?.status!)
-              )
-              .map((option, index) => (
-                <option value={option} key={index}>
-                  {option}
-                </option>
-              ))}
+            {order?.status === "Delivered" ? (
+              <option value="Delivered">Delivered</option>
+            ) : (
+              [
+                "Processing",
+                "Transferred to delivery partner",
+                "Shipping",
+                "Received",
+                "On the way",
+              ]
+                .slice(
+                  [
+                    "Processing",
+                    "Transferred to delivery partner",
+                    "Shipping",
+                    "Received",
+                    "On the way",
+                  ].indexOf(order?.status!)
+                )
+                .map((option, index) => (
+                  <option value={option} key={index}>
+                    {option}
+                  </option>
+                ))
+            )}
           </select>
         )}
       {order?.status === "Processing refund" ||
@@ -134,11 +136,13 @@ function SellerOrderDetail({ order, id }: { order: Order; id: string }) {
             ))}
         </select>
       ) : null}
-      <CustomButton
-        text="Update Status"
-        extraClass="mt-4"
-        handleClick={orderUpdateHandler}
-      />
+      {order?.status !== "Delivered" ? (
+        <CustomButton
+          text="Update Status"
+          extraClass="mt-4"
+          handleClick={orderUpdateHandler}
+        />
+      ) : null}
     </div>
   );
 }

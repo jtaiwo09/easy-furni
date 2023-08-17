@@ -34,8 +34,8 @@ export default async function page({ params: { id } }: any) {
   return (
     <div className="pt-[70px]">
       <CustomBreadCrumb />
-      <div className="flex flex-col lg:flex-row gap-5 container px-[30px] lg:px-0">
-        <div className="w-full lg:w-[40%] p-8  bg-[#f4f4f4] relative h-fit">
+      <div className="flex flex-col lg:flex-row gap-5 container px-5 sm:px-[30px] lg:px-0">
+        <div className="w-full lg:w-[40%] sm:p-8  bg-[#f4f4f4] relative h-fit">
           <ProductDetailItem data={data.images} />
         </div>
         <ProductDetailInfo data={data} averageRating={averageRating} />

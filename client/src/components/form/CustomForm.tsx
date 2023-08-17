@@ -1,4 +1,3 @@
-import { FormData } from "@/app/(auth)/login/page";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -10,7 +9,7 @@ export default function CustomForm({
   onSubmit,
   extraClass,
 }: any) {
-  const methods = useForm<FormData>({
+  const methods = useForm({
     defaultValues,
     resolver: yupResolver(schema),
   });

@@ -23,8 +23,10 @@ const createProductApi = async (data: any) => {
   }
 };
 
-async function getShopProducts(id: any) {
-  const res = await fetch(`${baseUrl}/product/get-all-products-shop/${id}`);
+async function getShopProducts(id: any, page = 1, limit = 10) {
+  const res = await fetch(
+    `${baseUrl}/product/get-all-products-shop/${id}?page=${page}&limit=${limit}`
+  );
   if (res.ok) {
     return res.json();
   }
@@ -40,11 +42,16 @@ async function getAProductApi(productId: any) {
   return data.product;
 }
 
-async function getAllProducts() {
-  const res = await fetch(`${baseUrl}/product/get-all-products`);
+async function getAllProducts(filterObject = {}, page = 1, limit = 10) {
+  const params = new URLSearchParams(filterObject);
+  const res = await fetch(
+    `${baseUrl}/product/get-all-products?${params}&page=${page}&limit=${limit}`,
+    {
+      next: { revalidate: 2 },
+    }
+  );
   if (res.ok) {
-    const data = await res.json();
-    return data.products;
+    return await res.json();
   }
   return null;
 }

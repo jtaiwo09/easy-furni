@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import React from "react";
 import { AiOutlineDelete } from "react-icons/ai";

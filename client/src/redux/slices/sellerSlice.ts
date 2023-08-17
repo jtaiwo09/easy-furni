@@ -1,6 +1,10 @@
 import { SellerLoginFormData } from "@/app/(auth)/shop-login/page";
 import { loginSeller, logoutSeller } from "@/services/auth";
-import { getSellerApi } from "@/services/seller";
+import {
+  deleteSellerAdminApi,
+  getAllSellerAdminApi,
+  getSellerApi,
+} from "@/services/seller";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface SellerState {
@@ -52,7 +56,11 @@ export const getSeller = createAsyncThunk(
 export const sellerSlice = createSlice({
   name: "seller",
   initialState,
-  reducers: {},
+  reducers: {
+    updateSeller: (state, { payload }) => {
+      state.seller = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -88,15 +96,14 @@ export const sellerSlice = createSlice({
         state.loading = false;
         state.error = null;
         state.seller = action.payload.seller;
-        state.isSeller = true;
       })
       .addCase(getSeller.rejected, (state, action) => {
         state.loading = false;
         state.seller = null;
-        state.isSeller = false;
         state.error = action.payload;
       });
   },
 });
 
+export const { updateSeller } = sellerSlice.actions;
 export default sellerSlice.reducer;

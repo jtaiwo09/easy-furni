@@ -1,5 +1,3 @@
-import { AddressFormData } from "@/components/Account/Address";
-import { ChangePasswordFormData } from "@/components/Account/ChangePassword";
 import { baseUrl } from "@/server";
 
 const getUserApi = async () => {
@@ -31,7 +29,7 @@ const updateUserInformationApi = async (data: any) => {
   }
 };
 
-const updateUserPasswordApi = async (data: ChangePasswordFormData) => {
+const updateUserPasswordApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-user-password`, {
       method: "PUT",
@@ -48,7 +46,7 @@ const updateUserPasswordApi = async (data: ChangePasswordFormData) => {
   }
 };
 
-const updatUserAddressApi = async (data: AddressFormData) => {
+const updatUserAddressApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-user-addresses`, {
       method: "PUT",

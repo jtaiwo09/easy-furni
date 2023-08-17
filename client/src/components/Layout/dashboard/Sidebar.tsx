@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { HiChevronLeft } from "react-icons/hi";
 import { sidebar } from "@/utils/data";
-import { Tooltip } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 import { usePathname } from "next/navigation";
 
 function Sidebar() {

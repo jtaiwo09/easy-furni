@@ -1,6 +1,7 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { getSeller } from "@/redux/slices/sellerSlice";
+import { getUser } from "@/redux/slices/userSlice";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
@@ -14,9 +15,9 @@ import { toast } from "react-toastify";
 
 function Navbar({ token }: any) {
   const dispatch = useAppDispatch();
-  const { seller } = useAppSelector((state) => state.seller);
+  const { user } = useAppSelector((state) => state.user);
   useEffect(() => {
-    dispatch(getSeller())
+    dispatch(getUser())
       .unwrap()
       .then()
       .catch((err) => {
@@ -54,10 +55,10 @@ function Navbar({ token }: any) {
         </Tooltip>
         <Tooltip title="Profile">
           <>
-            {seller ? (
+            {user ? (
               <Link href="/dashboard/settings">
                 <img
-                  src={seller.avatar.url}
+                  src={user.avatar.url}
                   className="w-[40px] h-[40px] rounded-full flex justify-center items-center border object-cover"
                 />
               </Link>

@@ -1,5 +1,4 @@
-import { FormHelperText } from "@mui/material";
-import { type } from "os";
+import FormHelperText from "@mui/material/FormHelperText";
 import React, { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 

@@ -22,7 +22,7 @@ function WishlistDrawer({ toggleModal, showWishlist }: IProps) {
       width={350}
       showCloseBtn={false}
     >
-      <div className="">
+      <>
         <div className="py-7 flex items-center justify-between border-b border-borderCol px-4 sticky top-0 w-full">
           <div className="flex items-center">
             <AiOutlineHeart className="mr-2 text-3xl" />
@@ -59,7 +59,7 @@ function WishlistDrawer({ toggleModal, showWishlist }: IProps) {
             </div>
           )}
         </div>
-      </div>
+      </>
     </Drawer>
   );
 }

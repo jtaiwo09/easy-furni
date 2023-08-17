@@ -8,12 +8,12 @@ export const currencyConverter = (v: any) => {
   }).format(v);
 };
 
-export const truncate = (v: string) => {
+export const truncate = (v: string, num = 30) => {
   if (!v) return "N/A";
-  return v.length > 30 ? `${v.slice(0, 30)}...` : v;
+  return v.length > num ? `${v.slice(0, num)}...` : v;
 };
 
-export const formatDate = (date: Date, formatType = "MMM D, YYYY") => {
+export const formatDate = (date: Date | any, formatType = "MMM D, YYYY") => {
   if (!date) return "N/A";
   return dayjs(date).format(formatType);
 };
