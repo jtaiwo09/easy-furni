@@ -1,6 +1,8 @@
+const ErrorHandler = require("./ErrorHandler");
+
 const commission = 0.1;
 
-const filter = async (req, Model, filterObj = {}) => {
+const filter = async (req, next, Model, filterObj = {}) => {
   const queryObj = { ...req.query, ...filterObj };
   const excludedFields = ["page", "sort", "limit", "fields"];
   excludedFields.forEach((el) => delete queryObj[el]);

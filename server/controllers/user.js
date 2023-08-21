@@ -12,6 +12,9 @@ const sendMail = require("../utils/sendMail");
 const { isAuthenticated, isAdmin } = require("../middlewares/auth");
 const cloudinary = require("cloudinary").v2;
 const { filter } = require("../utils");
+const crypto = require("crypto");
+const PasswordResetToken = require("../model/passwordResetToken");
+const bcrypt = require("bcrypt");
 
 // create user
 router.post("/create-user", async (req, res, next) => {
@@ -436,7 +439,7 @@ router.get(
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { query, count, totalPages } = await filter(req, User);
+      const { query, count, totalPages } = await filter(req, next, User);
       const users = await query;
       res.status(201).json({
         success: true,
@@ -447,6 +450,88 @@ router.get(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
+  })
+);
+
+router.post(
+  "/request-reset-password",
+  catchAsyncErrors(async (req, res, next) => {
+    const email = req.body.email;
+
+    const user = await User.findOne({ email });
+
+    // if(!user) return next(new ErrorHandler('user not found', 400))
+    if (user) {
+      const token = await PasswordResetToken.findOne({ userId: user._id });
+      if (token) await token.deleteOne();
+
+      let resetToken = crypto.randomBytes(32).toString("hex");
+
+      const hashedToken = await bcrypt.hash(resetToken, 10);
+
+      await new PasswordResetToken({
+        userId: user._id,
+        token: hashedToken,
+        createdAt: Date.now(),
+      }).save();
+
+      const link = `${process.env.BASE_URL}/reset-password?token=${resetToken}&id=${user._id}`;
+
+      const options = {
+        email: user.email,
+        subject: "Password Reset Request",
+        template: "request_password_reset",
+        context: {
+          name: user.name,
+          link,
+        },
+      };
+      await sendMail(options, false);
+    }
+    return res.json({ success: true, message: "Mail sent" });
+  })
+);
+
+router.post(
+  "/reset-password",
+  catchAsyncErrors(async (req, res, next) => {
+    const { token, userId, password } = req.body;
+
+    if (!token || !userId) {
+      return next(new ErrorHandler("Invalid Link", 400));
+    }
+
+    const passwordResetToken = await PasswordResetToken.findOne({ userId });
+
+    if (!passwordResetToken) {
+      return next(
+        new ErrorHandler("Invalid or expired password reset link", 400)
+      );
+    }
+    const isValid = await bcrypt.compare(token, passwordResetToken.token);
+    if (!isValid) {
+      return next(
+        new ErrorHandler("Invalid or expired password reset link", 400)
+      );
+    }
+    const user = await User.findById(userId);
+    user.password = password;
+
+    user.save({ validateBeforeSave: false });
+
+    const options = {
+      email: user.email,
+      subject: "Password Reset Successfully",
+      template: "password_reset",
+      context: {
+        name: user.name,
+      },
+    };
+    await sendMail(options, false);
+
+    await passwordResetToken.deleteOne();
+
+    return res.json({ success: true, message: "Password reset successful" });
   })
 );
 

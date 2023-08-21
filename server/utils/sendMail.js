@@ -3,7 +3,7 @@ const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
 const fs = require("fs");
 
-const sendMail = async (options) => {
+const sendMail = async (options, useLayout = "main") => {
   const transporter = nodemailer.createTransport({
     host: process.env.SMPT_HOST,
     port: process.env.SMPT_PORT,
@@ -19,7 +19,7 @@ const sendMail = async (options) => {
       extName: ".handlebars",
       partialsDir: path.resolve("./views/partials"),
       layoutsDir: path.resolve("./views/layouts"),
-      defaultLayout: "main",
+      defaultLayout: useLayout,
     },
     viewPath: path.resolve("./views"),
     extName: ".handlebars",

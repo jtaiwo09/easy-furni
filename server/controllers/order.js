@@ -435,7 +435,7 @@ router.get(
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { query, count, totalPages } = await filter(req, Order);
+      const { query, count, totalPages } = await filter(req, next, Order);
       const orders = await query.sort({
         deliveredAt: -1,
       });

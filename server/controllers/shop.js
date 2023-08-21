@@ -9,6 +9,9 @@ const sendShopToken = require("../utils/shopToken");
 const Shop = require("../model/shop");
 const { isSeller, isAuthenticated, isAdmin } = require("../middlewares/auth");
 const { filter } = require("../utils");
+const crypto = require("crypto");
+const PasswordResetToken = require("../model/passwordResetToken");
+const bcrypt = require("bcrypt");
 
 // create user shop
 router.post(
@@ -158,6 +161,22 @@ router.get(
       res.status(200).json({
         success: true,
         seller,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+// get shop info
+router.get(
+  "/get-shop-info/:id",
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const shop = await Shop.findById(req.params.id);
+      res.status(201).json({
+        success: true,
+        shop,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -315,7 +334,7 @@ router.get(
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { query, count, totalPages } = await filter(req, Shop);
+      const { query, count, totalPages } = await filter(req, next, Shop);
 
       const sellers = await query;
 
@@ -355,6 +374,90 @@ router.delete(
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
+  })
+);
+
+// Request password reset
+router.post(
+  "/request-reset-password",
+  catchAsyncErrors(async (req, res, next) => {
+    const email = req.body.email;
+
+    const shop = await Shop.findOne({ email });
+
+    // if(!shop) return next(new ErrorHandler('shop not found', 400))
+    if (shop) {
+      const token = await PasswordResetToken.findOne({ userId: shop._id });
+      if (token) await token.deleteOne();
+
+      const resetToken = crypto.randomBytes(32).toString("hex");
+
+      const hashedToken = await bcrypt.hash(resetToken, 10);
+
+      await new PasswordResetToken({
+        userId: shop._id,
+        token: hashedToken,
+        createdAt: Date.now(),
+      }).save();
+
+      const link = `${process.env.BASE_URL}/shop/reset-password?token=${resetToken}&id=${shop._id}`;
+
+      const options = {
+        email: shop.email,
+        subject: "Password Reset Request",
+        template: "request_password_reset",
+        context: {
+          name: shop.name,
+          link,
+        },
+      };
+      await sendMail(options, false);
+    }
+    return res.json({ success: true, message: "Mail sent" });
+  })
+);
+
+// Reset Password
+router.post(
+  "/reset-password",
+  catchAsyncErrors(async (req, res, next) => {
+    const { token, userId, password } = req.body;
+
+    if (!token || !userId) {
+      return next(new ErrorHandler("Invalid Link", 400));
+    }
+
+    const passwordResetToken = await PasswordResetToken.findOne({ userId });
+
+    if (!passwordResetToken) {
+      return next(
+        new ErrorHandler("Invalid or expired password reset link", 400)
+      );
+    }
+    const isValid = await bcrypt.compare(token, passwordResetToken.token);
+    if (!isValid) {
+      return next(
+        new ErrorHandler("Invalid or expired password reset link", 400)
+      );
+    }
+    const shop = await Shop.findById(userId);
+    shop.password = password;
+
+    shop.save({ validateBeforeSave: false });
+
+    const options = {
+      email: shop.email,
+      subject: "Password Reset Successfully",
+      template: "password_reset",
+      context: {
+        name: shop.name,
+      },
+    };
+    await sendMail(options, false);
+
+    await passwordResetToken.deleteOne();
+
+    return res.json({ success: true, message: "Password reset successful" });
   })
 );
 

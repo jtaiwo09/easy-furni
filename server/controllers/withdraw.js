@@ -59,10 +59,15 @@ router.get(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const withdrawals = await Withdraw.find({ "seller._id": req.seller._id });
+      const { query, count, totalPages } = await filter(req, next, Withdraw, {
+        "seller._id": req.seller._id,
+      });
+      const withdrawals = await query;
       return res.status(200).json({
         success: true,
         withdrawals,
+        totalRecord: count,
+        totalPages,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -77,7 +82,7 @@ router.get(
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { query, count, totalPages } = await filter(req, Withdraw);
+      const { query, count, totalPages } = await filter(req, next, Withdraw);
 
       const withdraws = await query;
 
