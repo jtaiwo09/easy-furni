@@ -58,7 +58,6 @@ function NewProducts() {
     newValue: number
   ) => {
     setValue(newValue);
-    mutate();
   };
 
   return (

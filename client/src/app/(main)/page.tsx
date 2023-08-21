@@ -14,8 +14,6 @@ export default async function Home() {
   }
   const products = data?.products;
 
-  if (!products) return <Loader />;
-
   return (
     <div className="">
       <HeroCarousel />

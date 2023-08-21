@@ -80,7 +80,7 @@ async function getAllProducts(filterObject = {}, page = 1, limit = 10) {
   if (res.ok) {
     return await res.json();
   }
-  return null;
+  throw new Error("Error Fetching data");
 }
 
 async function createProductReviewApi(data: any) {
