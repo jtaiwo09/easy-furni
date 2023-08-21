@@ -29,7 +29,7 @@ function ShopProduct({ id, data }: IProps) {
     router.push(`/shop/${id}?page=${page}`);
   };
   return (
-    <div className=" rounded-md flex-1 overflow-y-auto h-[calc(100vh-110px)] bg-white relative hide-scroll">
+    <div className="rounded-md flex-1 overflow-y-auto h-[calc(100vh-110px)] bg-white relative hide-scroll">
       <div className="z-[30] min-h-[60px] bg-white sticky top-0 flex flex-wrap gap-3 justify-between items-center border-b border-solid border-gray-200/70 py-2 px-3">
         <p className="text-sm font-medium my-2">({totalRecord}) Products</p>
         <div className="hidden items-center gap-2 sm:flex">

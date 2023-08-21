@@ -53,7 +53,7 @@ function ShopInfo({ data: { shop }, products, id }: IProp) {
   };
 
   return (
-    <div className="rounded-md bg-white sticky top-0 w-full sm:w-[25%] min-w-[250px]">
+    <div className="rounded-md bg-white sticky top-0 w-full md:w-[25%] min-w-[250px]">
       <div className="px-4 pt-10">
         <Image
           src={shop.avatar.url}

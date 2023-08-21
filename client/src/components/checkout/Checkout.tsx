@@ -137,17 +137,17 @@ function Checkout() {
     router.push("/payment");
   };
   return (
-    <div className="flex gap-5 my-10 flex-col lg:flex-row">
+    <div className="flex gap-5 my-10 flex-col sm:flex-row">
       <div className="flex-1">
         <form onSubmit={handleSubmit(handleCheckout)}>
           <div className="w-full bg-white rounded-md p-4">
             <h2 className="text-xl font-semibold mb-10">Shipping Address</h2>
-            <div className="flex flex-col sm:flex-row sm:gap-4 mb-0 sm:mb-4">
+            <div className="flex flex-col md:flex-row md:gap-4 mb-0 md:mb-4">
               <TextField
                 name="name"
                 label="Full Name"
                 inputClass="leading-[24px]"
-                formGroup=" mb-4 sm:mb-0 w-full"
+                formGroup=" mb-4 md:mb-0 w-full"
                 register={register}
                 errors={errors}
               />
@@ -155,17 +155,17 @@ function Checkout() {
                 name="email"
                 label="Email Address"
                 inputClass="leading-[24px]"
-                formGroup=" mb-4 sm:mb-0 w-full"
+                formGroup=" mb-4 md:mb-0 w-full"
                 register={register}
                 errors={errors}
               />
             </div>
-            <div className="flex flex-col sm:flex-row sm:gap-4 mb-0 sm:mb-4">
+            <div className="flex flex-col md:flex-row md:gap-4 mb-0 md:mb-4">
               <TextField
                 name="phoneNumber"
                 label="Phone Number"
                 inputClass="leading-[24px]"
-                formGroup=" mb-4 sm:mb-0 w-full"
+                formGroup=" mb-4 md:mb-0 w-full"
                 register={register}
                 errors={errors}
               />
@@ -178,7 +178,7 @@ function Checkout() {
                 errors={errors}
               />
             </div>
-            <div className="flex flex-col sm:flex-row sm:gap-4 mb-0 sm:mb-4">
+            <div className="flex flex-col md:flex-row md:gap-4 mb-0 md:mb-4">
               <CountrySelect
                 label="Select Country"
                 name="country"
@@ -212,9 +212,7 @@ function Checkout() {
               </div>
             )}
           </div>
-          <div className="lg:hidden mt-5">
-            <CartSummary orderData={orderData} />
-          </div>
+
           <CustomButton
             type="submit"
             text="Go to payment"
@@ -222,7 +220,7 @@ function Checkout() {
           />
         </form>
       </div>
-      <div className="hidden lg:block w-full lg:w-[30%]">
+      <div className="w-full sm:max-w-[300px]">
         <CartSummary orderData={orderData} />
       </div>
     </div>

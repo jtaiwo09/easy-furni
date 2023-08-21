@@ -21,10 +21,10 @@ function HeroCarousel() {
       id: "1",
       url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692616527/hero-sliders/hero1_gajtnd.jpg",
     },
-    {
-      id: "2",
-      url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692624160/hero-sliders/hero7_tixq7a.jpg",
-    },
+    // {
+    //   id: "2",
+    //   url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692624160/hero-sliders/hero7_tixq7a.jpg",
+    // },
     {
       id: "3",
       url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692623376/hero-sliders/hero6_h02d58.jpg",
@@ -50,9 +50,11 @@ function HeroCarousel() {
     <div className="relative w-full h-[60vh] sm:h-screen pt-[70px]">
       <Slider {...settings}>
         {images.map((el) => (
-          <div className="relative h-[calc(60vh-70px)]  sm:h-[calc(100vh-110px)]">
+          <div
+            key={el.id}
+            className="relative h-[calc(60vh-70px)]  sm:h-[calc(100vh-110px)]"
+          >
             <Image
-              key={el.id}
               src={el.url}
               alt=""
               fill
