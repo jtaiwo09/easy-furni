@@ -5,7 +5,7 @@ import { useAppSelector } from "@/redux/hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import { redirect, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import PaymentInfo from "./PaymentInfo";
 import { baseUrl } from "@/server";
 import CartSummary from "./CartSummary";
@@ -35,11 +35,12 @@ const schema = yup.object().shape({
 });
 
 function Payment() {
-  const { user } = useAppSelector((state) => state.user);
+  const { user, isAuthenticated } = useAppSelector((state) => state.user);
   const { cart } = useAppSelector((state) => state.cart);
   const [orderData, setOrderData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem("latestOrder") ?? "");
@@ -84,22 +85,26 @@ function Payment() {
   };
 
   const createOrder = async () => {
-    const res = await fetch(`${baseUrl}/order/create-order`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order),
-    });
-    const result = await res.json();
-    setLoading(false);
-    if (res.ok) {
-      router.push("/order/success");
-      toast.success("Order successful!");
-      localStorage.setItem("cartItems", JSON.stringify([]));
-      localStorage.setItem("latestOrder", JSON.stringify([]));
+    if (isAuthenticated) {
+      const res = await fetch(`${baseUrl}/order/create-order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+      const result = await res.json();
+      setLoading(false);
+      if (res.ok) {
+        router.push("/order/success");
+        toast.success("Order successful!");
+        localStorage.setItem("cartItems", JSON.stringify([]));
+        localStorage.setItem("latestOrder", JSON.stringify([]));
+      } else {
+        toast.error(result.message);
+      }
     } else {
-      toast.error(result.message);
+      router.push(`/login?redirect=${pathname}`);
     }
   };
 

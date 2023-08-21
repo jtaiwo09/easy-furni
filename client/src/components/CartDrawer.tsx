@@ -40,16 +40,16 @@ function CartDrawer({ toggleModal, showCart }: IProps) {
             <MdClose />
           </IconButton>
         </div>
-        <div className="h-[calc(100vh-97px)] px-4 pt-6 pb-4 relative">
+        <div className="h-[calc(100vh-97px)] p-4 relative">
           {cart.length > 0 ? (
-            <div className="h-[calc(100vh-236px)] overflow-y-auto">
+            <div className="h-[calc(100vh-230px)] overflow-y-auto">
               {cart.map((product) => (
                 <ProductItem key={product._id} product={product} />
               ))}
             </div>
           ) : (
             <div className="w-full h-[calc(100%-129px)]">
-              <div className="w-full min-h-[200px]  flex flex-col justify-center items-center mt-[40%] px-4">
+              <div className="w-full min-h-[200px] flex flex-col justify-center items-center mt-[40%] px-4">
                 <p className="text-center mb-2">Cart Empty</p>
                 <div className="h-[80px] w-[80px] rounded-full bg-gray-200 flex justify-center items-center">
                   <BsCart4 className="text-black/40" size={30} />

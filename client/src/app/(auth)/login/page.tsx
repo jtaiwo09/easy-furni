@@ -6,7 +6,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import * as yup from "yup";
 import CustomForm from "@/components/form/CustomForm";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { login } from "@/redux/slices/userSlice";
@@ -28,10 +28,16 @@ function page() {
   const router = useRouter();
   const { isAuthenticated, loading } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/");
+      const path = searchParams.get("redirect");
+      if (path) {
+        router.push(path);
+      } else {
+        router.push("/");
+      }
     }
   }, [isAuthenticated]);
 
@@ -73,17 +79,17 @@ function page() {
           <Stack
             direction="row"
             alignItems="center"
-            justifyContent="space-between"
+            justifyContent="flex-end"
             spacing={2}
             mb={2}
           >
-            <label htmlFor="remember">
+            {/* <label htmlFor="remember">
               <input id="remember" type="checkbox" className="mr-2" />
               Remember me
-            </label>
+            </label> */}
             <Link
               href="/forgot-password"
-              className="hover:underline underline-offset-2"
+              className="hover:underline underline-offset-2 text-sm"
             >
               Forgot your password?
             </Link>
@@ -94,7 +100,7 @@ function page() {
             type="submit"
             loading={loading}
           />
-          <p className="mt-2.5">
+          <p className="mt-2.5 text-sm">
             Don't have an account?{" "}
             <Link
               href="/signup"
