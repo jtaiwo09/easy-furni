@@ -1,16 +1,5 @@
 import { baseUrl } from "@/server";
 
-export const getSellerApi = async (url: string) => {
-  const res = await fetch(`${baseUrl}/${url}`, {
-    credentials: "include",
-  });
-  const result = await res.json();
-  if (res.ok) {
-    return result.seller;
-  }
-  throw new Error(result.message);
-};
-
 // Update seller info -- seller
 export const updateSellerInformationApi = async (data: any) => {
   const res = await fetch(`${baseUrl}/shop/update-seller-info`, {
@@ -111,21 +100,6 @@ export const createWithdrawalRequestApi = async (data: { amount: number }) => {
   const result = await res.json();
   if (res.ok) {
     return result.seller;
-  }
-  throw new Error(result.message);
-};
-
-// Get sellers withdrawals
-export const getWithdrawalsApi = async (url: string) => {
-  const res = await fetch(`${baseUrl}/${url}`, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const result = await res.json();
-  if (res.ok) {
-    return result.withdrawals;
   }
   throw new Error(result.message);
 };

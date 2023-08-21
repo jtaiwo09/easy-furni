@@ -49,6 +49,7 @@ function CouponTable({ rows }: any) {
       pageSizeOptions={[10, 25, 100]}
       disableRowSelectionOnClick
       autoHeight
+      hideFooter
     />
   );
 }

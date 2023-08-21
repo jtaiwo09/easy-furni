@@ -7,18 +7,21 @@ import { deleteSellerAdminApi } from "@/services/swr/seller/fetcher";
 import { formatDate } from "@/utils/helperFunc";
 import LinearProgress from "@mui/material/LinearProgress";
 import { DataGrid, GridActionsCellItem, GridRowId } from "@mui/x-data-grid";
-import React, { useCallback, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 function UserTable() {
-  const [page, setPage] = useState(1);
   const [userId, setUserId] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") ?? 1;
 
   const { data, isLoading, error, mutate } = Fetcher({
     url: "user/admin-all-users",
-    page,
+    page: Number(page),
   });
 
   if (isLoading) return <Loader />;
@@ -91,7 +94,7 @@ function UserTable() {
     });
 
   const handleChangePage = async (e: any, page: any) => {
-    setPage(page);
+    router.push(`/admin-dashboard/users?page=${page}`);
     mutate();
   };
 
@@ -124,7 +127,6 @@ function UserTable() {
       <CustomPagination
         data={{ totalPages, totalRecord }}
         handleChangePage={handleChangePage}
-        page={page}
       />
       <ConfirmationModal
         title="Do you want to delete this seller?"

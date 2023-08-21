@@ -37,7 +37,7 @@ const schema = yup.object().shape({
 });
 
 function Checkout() {
-  const { user } = useAppSelector((state) => state.user);
+  const { user, isAuthenticated } = useAppSelector((state) => state.user);
   const { cart } = useAppSelector((state) => state.cart);
   const [couponCodeData, setCouponCodeData] = useState(null);
   const [discountPrice, setDiscountPrice] = useState(null);
@@ -196,16 +196,21 @@ function Checkout() {
                 control={control}
               />
             </div>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="default"
-                onChange={handleDefaultAddress}
-              />
-              <label htmlFor="default" className="inline-block ml-4">
-                Use default address{" "}
-              </label>
-            </div>
+            {isAuthenticated && (
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="default"
+                  onChange={handleDefaultAddress}
+                />
+                <label
+                  htmlFor="default"
+                  className="inline-block ml-4 font-medium"
+                >
+                  Use default address{" "}
+                </label>
+              </div>
+            )}
           </div>
           <div className="lg:hidden mt-5">
             <CartSummary orderData={orderData} />

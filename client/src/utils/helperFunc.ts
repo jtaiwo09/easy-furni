@@ -2,10 +2,11 @@ import dayjs from "dayjs";
 
 export const currencyConverter = (v: any) => {
   if (!v) return "N/A";
-  return new Intl.NumberFormat("en-US", {
+  return v.toLocaleString("en-NG", {
     style: "currency",
     currency: "NGN",
-  }).format(v);
+    minimumFractionDigits: Math.ceil(v % 1) * 2,
+  });
 };
 
 export const truncate = (v: string, num = 30) => {

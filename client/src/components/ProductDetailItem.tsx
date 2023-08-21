@@ -4,6 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SlideArrow from "./SlideArrow";
+import Image from "next/image";
 
 export default function ProductDetailItem({ data }: any) {
   const slicker = useRef<any>(null);
@@ -25,17 +26,22 @@ export default function ProductDetailItem({ data }: any) {
       <Slider {...settings} ref={slicker}>
         {data &&
           data?.map((item: any, i: string) => (
-            <div className="bg-[#f4f4f4] h-[40vh] lg:h-[60vh]" key={i}>
-              <img
+            <div
+              className="bg-[#f4f4f4] pt-4 px-4 sm:px-0 h-[250px] sm:h-[60vh] relative"
+              key={i}
+            >
+              <Image
                 src={item.url}
                 alt=""
-                className="w-full h-[80%] object-contain mix-blend-darken"
+                fill
+                priority
+                className="w-full h-[100%] object-contain mix-blend-darken"
               />
             </div>
           ))}
       </Slider>
 
-      <div className="flex gap-3 bg-[#f4f4f4] absolute bottom-4">
+      <div className="flex gap-3 bg-[#f4f4f4] mt-4 pb-4">
         {data.map((el: any, i: any) => (
           <button
             key={i}
@@ -44,9 +50,11 @@ export default function ProductDetailItem({ data }: any) {
             }`}
             onClick={() => changeSlide(i)}
           >
-            <img
+            <Image
               src={el.url}
               alt=""
+              width={45}
+              height={45}
               className="w-[45px] h-[45px] object-cover mix-blend-darken"
             />
           </button>

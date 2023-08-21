@@ -1,23 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Link from "next/link";
 import Button from "@mui/material/Button";
-import { AiOutlineArrowRight, AiOutlineEye } from "react-icons/ai";
-import { currencyConverter, formatDate } from "@/utils/helperFunc";
+import { AiOutlineEye } from "react-icons/ai";
+import { currencyConverter } from "@/utils/helperFunc";
 import CustomPagination from "@/components/Layout/CustomPagination";
 import LinearProgress from "@mui/material/LinearProgress";
 import { toast } from "react-toastify";
-import Badge from "@/components/Badge";
 import { Fetcher } from "@/services/swr";
 import Loader from "@/components/Layout/Loader";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function ProductTable() {
-  const [page, setPage] = useState(1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") ?? 1;
 
   const { data, isLoading, error, mutate } = Fetcher({
     url: "product/get-all-products",
-    page,
+    page: Number(page),
   });
 
   if (isLoading) return <Loader />;
@@ -93,7 +95,7 @@ function ProductTable() {
   });
 
   const handleChangePage = async (page: any) => {
-    setPage(page);
+    router.push(`/admin-dashboard/products?page=${page}`);
     mutate();
   };
 
@@ -112,7 +114,6 @@ function ProductTable() {
       <CustomPagination
         data={{ totalPages, totalRecord }}
         handleChangePage={handleChangePage}
-        page={page}
       />
     </>
   );

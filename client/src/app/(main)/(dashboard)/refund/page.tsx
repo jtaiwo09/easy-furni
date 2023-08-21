@@ -94,6 +94,7 @@ function page() {
         pageSizeOptions={[10, 100]}
         disableRowSelectionOnClick
         autoHeight
+        hideFooter
       />
     </div>
   );

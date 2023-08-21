@@ -28,7 +28,7 @@ function PaymentInfo({
     <div className="w-full bg-white rounded-md p-5">
       <div>
         <div
-          className="flex w-full pb-5 border-b cursor-pointer"
+          className="flex items-center w-full pb-5 border-b cursor-pointer"
           onClick={() => setSelect(1)}
         >
           <div className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center">
@@ -36,14 +36,14 @@ function PaymentInfo({
               <div className="w-[13px] h-[13px] bg-[#1d1a1acb] rounded-full" />
             ) : null}
           </div>
-          <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
+          <h4 className="text-sm sm:text-base pl-2 font-semibold text-primary">
             Pay with Paystack
           </h4>
         </div>
         {select === 1 ? (
           <div className="w-full flex border-b">
             <PaystackButton
-              className="w-[150px] my-4 flex items-center justify-center bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]"
+              className="min-w-[100px] my-4 flex items-center justify-center bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-sm sm:text-base font-semibold"
               {...options}
             />
           </div>
@@ -52,14 +52,14 @@ function PaymentInfo({
       <div>
         <div
           onClick={() => setSelect(2)}
-          className="flex w-full py-5 border-b cursor-pointer"
+          className="flex items-center w-full py-5 border-b cursor-pointer"
         >
           <div className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center">
             {select === 2 ? (
               <div className="w-[13px] h-[13px] bg-[#1d1a1acb] rounded-full" />
             ) : null}
           </div>
-          <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
+          <h4 className="text-sm sm:text-base pl-2 font-semibold text-primary">
             Cash on Delivery
           </h4>
         </div>
@@ -70,7 +70,7 @@ function PaymentInfo({
             <form className="w-full" onSubmit={cashOnDeliveryHandler}>
               <button
                 type="submit"
-                className="w-[150px] mt-4 flex items-center justify-center !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]"
+                className="min-w-[100px] mt-4 flex items-center justify-center !bg-[#f63b60] text-[#fff] h-[45px] rounded-[5px] cursor-pointer text-sm font-semibold"
               >
                 {loading && <BiLoader className="text-xl mr-2 animate-spin" />}
                 Confirm

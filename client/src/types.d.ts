@@ -1,7 +1,18 @@
+interface IsearchParams {
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
+}
 interface IBank {
   id: number;
   name: string;
   code: string;
+}
+
+interface Image {
+  public_id: string;
+  url: string;
+  _id?: string;
 }
 
 interface Product {
@@ -13,11 +24,7 @@ interface Product {
   originalPrice: number;
   discountPrice: number;
   stock: number;
-  images: {
-    public_id: string;
-    url: string;
-    _id: string;
-  }[];
+  images: Image[];
   shopId: string;
   shop: Shop;
   sold_out: number;
@@ -81,6 +88,11 @@ interface Shop {
     updatedAt: Date;
     status: string;
   }[];
+  withdrawMethod: {
+    bankName: string;
+    bankHolderName: string;
+    bankAccountNumber: string;
+  };
   createdAt: Date;
   updatedAt: Date;
   ratings?: any;

@@ -7,11 +7,17 @@ import Slider from "@mui/material/Slider";
 import Drawer from "./modals/Drawer";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { toggleFilter } from "@/redux/slices/productSlice";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-function ProductFilter({ fetchProduct, filterObject, setFilterObject }: any) {
+interface IProps {
+  filterObject: any;
+  setFilterObject: any;
+}
+
+function ProductFilter({ filterObject, setFilterObject }: IProps) {
   const [value, setValue] = React.useState<number[]>([0, 50000]);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const dispatch = useAppDispatch();
   const { showFilter } = useAppSelector((state) => state.product);
@@ -26,9 +32,9 @@ function ProductFilter({ fetchProduct, filterObject, setFilterObject }: any) {
 
   const handleClick = (title: string) => {
     const params = { ...filterObject, category: title };
-    console.log(params);
     setFilterObject(params);
-    fetchProduct(params);
+    const queryString = new URLSearchParams(params).toString();
+    router.push(`/product?${queryString}`);
   };
 
   const filterByPrice = async () => {
@@ -38,13 +44,13 @@ function ProductFilter({ fetchProduct, filterObject, setFilterObject }: any) {
       "discountPrice[$lte]": `${value[1]}`,
     };
     setFilterObject(params);
-
-    fetchProduct(params);
+    const queryString = new URLSearchParams(params).toString();
+    router.push(`/product?${queryString}`);
   };
 
   const clearFilter = () => {
     setFilterObject({});
-    fetchProduct();
+    router.push("/product");
   };
 
   const inputHandler = (v: any, str: string) => {

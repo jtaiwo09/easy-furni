@@ -15,7 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { FormControlLabel, Switch } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -30,13 +30,13 @@ const schema = yup.object().shape({
 });
 
 function SellerTable() {
-  const [page, setPage] = useState(1);
   const [shopId, setShopId] = useState("");
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") ?? 1;
 
   const {
     register,
@@ -58,7 +58,7 @@ function SellerTable() {
 
   const { data, isLoading, error, mutate } = Fetcher({
     url: "shop/admin-all-sellers",
-    page,
+    page: Number(page),
   });
 
   if (isLoading) return <Loader />;
@@ -177,7 +177,7 @@ function SellerTable() {
   };
 
   const handleChangePage = async (e: any, page: any) => {
-    setPage(page);
+    router.push(`/admin-dashboard/sellers?page=${page}`);
     mutate();
   };
 
@@ -210,7 +210,6 @@ function SellerTable() {
       <CustomPagination
         data={{ totalPages, totalRecord }}
         handleChangePage={handleChangePage}
-        page={page}
       />
       <ConfirmationModal
         title="Do you want to delete this seller?"

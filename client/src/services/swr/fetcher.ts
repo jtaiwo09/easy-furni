@@ -2,32 +2,19 @@ import { baseUrl } from "@/server";
 
 // General fetcher
 export const FetcherApi = async ([url, page, limit]: any) => {
+  const check = url.indexOf("?");
   const res = await fetch(
-    `${baseUrl}/${url}?page=${page ?? 1}&limit=${limit ?? 10}`,
+    `${baseUrl}/${url}${check !== -1 ? "&" : "?"}page=${page ?? 1}&limit=${
+      limit ?? 10
+    }`,
     {
       credentials: "include",
+      next: { revalidate: 3 },
     }
   );
-  const result = await res.json();
   if (res.ok) {
-    return result;
+    return await res.json();
   } else {
-    throw new Error(result.message);
+    throw new Error("Failed: Error Fetching Data");
   }
 };
-
-// General fetcher
-// export const DynamicFetcherApi = async ([url, id, page, limit]: any) => {
-//   const res = await fetch(
-//     `${baseUrl}/${url}/${id}?page=${page ?? 1}&limit=${limit ?? 10}`,
-//     {
-//       credentials: "include",
-//     }
-//   );
-//   const result = await res.json();
-//   if (res.ok) {
-//     return result;
-//   } else {
-//     throw new Error(result.message);
-//   }
-// };

@@ -19,18 +19,6 @@ export interface CheckoutFormData {
   state: string;
 }
 
-// export interface IOrder {
-//   cart: any;
-//   shippingAddress: any;
-//   user: User;
-//   totalPrice: any;
-//   paymentInfo: {
-//     id?: string;
-//     type?: string;
-//     status?: string;
-//   } | null;
-// }
-
 const schema = yup.object().shape({
   name: yup.string().required("Full name is required"),
   email: yup

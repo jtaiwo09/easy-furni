@@ -21,7 +21,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const token = cookies().get("seller_token")?.value ?? null;
-  if (!token) redirect("/shop-login");
+  if (!token) redirect("/shop/login");
   return (
     <html lang="en">
       <body className={montserrat.className}>

@@ -1,4 +1,4 @@
-import { createProductApi } from "@/services/product";
+import { createProductApi, updateProductApi } from "@/services/product";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface ProductState {
@@ -28,6 +28,17 @@ export const createProduct = createAsyncThunk(
   }
 );
 
+export const updateProduct = createAsyncThunk(
+  "product/update-product",
+  async (data: any, thunkApi) => {
+    const response = (await updateProductApi(data)) as any;
+    if (!response.ok) {
+      return thunkApi.rejectWithValue(await response.json());
+    }
+    return await response.json();
+  }
+);
+
 export const productSlice = createSlice({
   name: "seller",
   initialState,
@@ -48,7 +59,17 @@ export const productSlice = createSlice({
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
-        state.product = null;
+        state.error = action.payload;
+      })
+      .addCase(updateProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

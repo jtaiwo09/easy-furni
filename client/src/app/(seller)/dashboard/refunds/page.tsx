@@ -88,14 +88,18 @@ function page() {
   });
 
   return (
-    <div className="overflow-scroll hide-scroll bg-white">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSizeOptions={[10, 100]}
-        disableRowSelectionOnClick
-        autoHeight
-      />
+    <div className="">
+      <h2 className="text-xl sm:text-2xl font-medium">Refunds</h2>
+      <div className="overflow-scroll hide-scroll bg-white mt-4">
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSizeOptions={[10, 100]}
+          disableRowSelectionOnClick
+          autoHeight
+          hideFooter
+        />
+      </div>
     </div>
   );
 }

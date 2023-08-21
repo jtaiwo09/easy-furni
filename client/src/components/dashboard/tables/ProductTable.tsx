@@ -1,20 +1,20 @@
 "use client";
 import CustomPagination from "@/components/Layout/CustomPagination";
-import { getShopProducts } from "@/services/product";
 import { currencyConverter } from "@/utils/helperFunc";
-import LinearProgress from "@mui/material/LinearProgress";
-import Button from "@mui/material/Button";
-import { DataGrid } from "@mui/x-data-grid";
-import Link from "next/link";
-import React, { useState } from "react";
-import { AiOutlineEye } from "react-icons/ai";
-import { toast } from "react-toastify";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import React from "react";
+import { useRouter } from "next/navigation";
 
-function ProductTable({ data, id }: any) {
-  const products = data.products;
-  const [value, setValue] = useState(products);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+interface IProps {
+  data: any;
+  edit: any;
+  handlePagination: any;
+  deleteProduct: any;
+}
+
+function ProductTable({ data, edit, handlePagination, deleteProduct }: IProps) {
+  const products: Product[] = data?.products ?? [];
+  const router = useRouter();
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -49,66 +49,67 @@ function ProductTable({ data, id }: any) {
       field: "Preview",
       flex: 0.8,
       minWidth: 100,
-      headerName: "Preview",
-      type: "number",
+      headerName: "Action",
       sortable: false,
-      renderCell: (params: any) => {
-        return (
-          <>
-            <Link href={`/product/${params.id}`}>
-              <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      type: "actions",
+      getActions: (params: any) => [
+        <GridActionsCellItem
+          label="View"
+          onClick={() => router.push(`/product/${params.id}`)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          label="Update"
+          onClick={() => handleEdit(params.id)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          label="Delete"
+          onClick={() => handleDelete(params.id)}
+          showInMenu
+        />,
+      ],
     },
   ];
 
-  const rows = [] as any;
+  const rows: any = [];
 
-  value &&
-    value.forEach((item: any) => {
+  products &&
+    products.forEach((item: any) => {
       rows.push({
         id: item._id,
         name: item.name,
-        price: currencyConverter(item.originalPrice),
+        price: currencyConverter(item.discountPrice),
         Stock: item.stock,
         sold: item?.sold_out,
       });
     });
 
+  const handleEdit = (id: string) => {
+    edit(id);
+  };
+
+  const handleDelete = (id: string) => {
+    deleteProduct(id);
+  };
+
   const handleChangePage = async (e: any, page: any) => {
-    setPage(page);
-    setLoading(true);
-    try {
-      const res = await getShopProducts(id, page);
-      setValue(res.products);
-      setLoading(false);
-    } catch (error: any) {
-      setLoading(false);
-      toast.error(error.message);
-    }
+    handlePagination(page);
   };
 
   return (
     <>
       <div className="mt-4 bg-white rounded-md shadow-sm w-full h-full">
-        {loading && <LinearProgress />}
         <DataGrid
           columns={columns}
           rows={rows}
           pageSizeOptions={[10, 25, 100]}
           disableRowSelectionOnClick
           autoHeight
+          hideFooter
         />
       </div>
-      <CustomPagination
-        data={data}
-        handleChangePage={handleChangePage}
-        page={page}
-      />
+      <CustomPagination data={data} handleChangePage={handleChangePage} />
     </>
   );
 }

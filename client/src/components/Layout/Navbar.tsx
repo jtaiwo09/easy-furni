@@ -24,6 +24,8 @@ import { toast } from "react-toastify";
 import WishlistDrawer from "../WishlistDrawer";
 import { useRouter } from "next/navigation";
 import { getUser, logout } from "@/redux/slices/userSlice";
+import { getSeller } from "@/redux/slices/sellerSlice";
+import Image from "next/image";
 
 function Navbar({
   sellerToken,
@@ -50,10 +52,16 @@ function Navbar({
     if (token) {
       dispatch(getUser());
     }
+    if (sellerToken) {
+      dispatch(getSeller());
+    }
+  }, [token, sellerToken]);
+
+  useEffect(() => {
     window.addEventListener("scroll", function () {
       const currentScrollPos = window.pageYOffset;
       setPos(currentScrollPos);
-      if (currentScrollPos > 100) {
+      if (currentScrollPos > 10) {
         setShowNav(true);
       } else {
         setShowNav(false);
@@ -125,7 +133,7 @@ function Navbar({
             href="/"
             className="uppercase inline-block font-semibold text-xl sm:text-2xl"
           >
-            Easy Furni
+            JTK STORE
           </Link>
 
           <div className="hidden lg:block h-full">
@@ -150,24 +158,24 @@ function Navbar({
                       Products
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       href="#"
                       className="hover:text-text-hover font-semibold"
                     >
                       Best Selling
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link
-                      href="#"
+                      href="/faq"
                       className="hover:text-text-hover font-semibold"
                     >
                       FAQ
                     </Link>
                   </li>
                   <li>
-                    <Link href={sellerToken ? "/dashboard" : "/shop-create"}>
+                    <Link href={sellerToken ? "/dashboard" : "/shop/signup"}>
                       <CustomButton
                         type="button"
                         text={sellerToken ? "Dashboard" : "Become Seller"}
@@ -201,9 +209,11 @@ function Navbar({
                               className="block mb-2 hover:bg-slate-100  hover:font-medium px-4 text-sm"
                             >
                               <div className="w-full flex items-center py-3">
-                                <img
+                                <Image
                                   src={data.image_Url[0].url}
                                   alt="product"
+                                  width={40}
+                                  height={40}
                                   className="w-10 h-10 mr-2.5"
                                 />
                                 <h1>{product_name}</h1>
@@ -389,9 +399,11 @@ function Navbar({
                           className="block mb-2 hover:bg-slate-100  hover:font-medium px-4 text-sm"
                         >
                           <div className="w-full flex items-center py-3">
-                            <img
+                            <Image
                               src={data.image_Url[0].url}
                               alt="product"
+                              width={40}
+                              height={40}
                               className="w-10 h-10 mr-2.5"
                             />
                             <h1>{product_name}</h1>
@@ -428,11 +440,11 @@ function Navbar({
               Products
             </Link>
           </li>
-          <li onClick={closeMobileNav} className="w-fit">
+          {/* <li onClick={closeMobileNav} className="w-fit">
             <Link href="#" className="hover:text-text-hover font-semibold">
               Best Selling
             </Link>
-          </li>
+          </li> */}
           <li onClick={closeMobileNav} className="w-fit">
             <Link href="#" className="hover:text-text-hover font-semibold">
               FAQ
@@ -457,7 +469,7 @@ function Navbar({
             )}
           </li>
           <li>
-            <Link href={sellerToken ? "/dashboard" : "/shop-create"}>
+            <Link href={sellerToken ? "/dashboard" : "/shop/signup"}>
               <CustomButton
                 type="button"
                 text={sellerToken ? "Dashboard" : "Become Seller"}

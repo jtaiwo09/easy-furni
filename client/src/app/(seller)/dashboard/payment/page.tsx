@@ -14,7 +14,6 @@ import {
   deleteBankMutation,
   sellerMutationOptions,
 } from "@/services/swr/helpers/sellerMutations";
-import { getSeller, getWithdrawals } from "@/services/swr/seller";
 import { createWithdrawalRequestApi } from "@/services/swr/seller/fetcher";
 import { currencyConverter, formatDate } from "@/utils/helperFunc";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -29,6 +28,8 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import BankHolderName from "@/components/form/bank/BankHolderName";
 import BankNames from "@/components/form/bank/BankNames";
+import { Fetcher } from "@/services/swr";
+import { useSearchParams } from "next/navigation";
 
 export type AddPaymentMethod = {
   bankName: any;
@@ -58,14 +59,13 @@ const amountSchema = yup.object().shape({
 });
 
 function page() {
-  // const { seller } = useAppSelector((state) => state.seller);
   const [open, setOpen] = useState(false);
   const [addPayment, setAddPayment] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
   const [banks, setBanks] = useState<IBank[]>([]);
-
-  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") ?? 1;
 
   useEffect(() => {
     const getBankNames = async () => {
@@ -84,8 +84,6 @@ function page() {
     };
     getBankNames();
   }, []);
-
-  let seller: any = null;
 
   const {
     register,
@@ -116,20 +114,30 @@ function page() {
     resolver: yupResolver(amountSchema),
   });
 
-  const { data, isLoading, mutate } = getSeller(dispatch);
-  const {
-    data: widthdrawals,
-    isLoading: withdrawalLoading,
-    mutate: withdrawalMutate,
-  } = getWithdrawals();
+  const resSeller = Fetcher({ url: "shop/get-seller" });
 
-  seller = data;
+  const resWithdrawal = Fetcher({
+    url: "withdraw/get-seller-withdrawals",
+    page: Number(page),
+  });
 
-  if (isLoading || withdrawalLoading) return <Loader />;
+  if (resSeller.isLoading || resWithdrawal.isLoading) return <Loader />;
 
-  if (!data && !widthdrawals) return;
+  console.log(resWithdrawal.error);
 
-  const availableBalance = seller?.availableBalance.toFixed(2);
+  if (resSeller.error) {
+    toast.error(resSeller.error.message);
+  }
+  if (resWithdrawal.error) {
+    toast.error(resWithdrawal.error.message);
+  }
+
+  const seller: Shop = resSeller.data?.seller;
+
+  const widthdrawals = resWithdrawal.data?.withdrawals;
+
+  const availableBalance = seller?.availableBalance;
+
   const withdrawMethod = seller?.withdrawMethod;
 
   const toggleModal = () => {
@@ -146,7 +154,7 @@ function page() {
 
   const onSubmit = (data: any) => {
     try {
-      mutate(
+      resWithdrawal.mutate(
         createBankMutation(data, seller),
         sellerMutationOptions(data, seller)
       );
@@ -168,7 +176,10 @@ function page() {
   const handleDelete = () => {
     const data = { ...seller, withdrawMethod: null };
     try {
-      mutate(deleteBankMutation(seller), sellerMutationOptions(data, seller));
+      resWithdrawal.mutate(
+        deleteBankMutation(seller),
+        sellerMutationOptions(data, seller)
+      );
       setDeleteModal(false);
       toast.success("Bank Details Deleted Successfully");
     } catch (error: any) {
@@ -183,7 +194,7 @@ function page() {
       setDeleteLoader(true);
       try {
         await createWithdrawalRequestApi(data);
-        await mutate();
+        await resWithdrawal.mutate();
         setDeleteLoader(false);
         setOpen(false);
         resetWithdrawal();
@@ -198,14 +209,15 @@ function page() {
 
   const rows: any = [];
 
-  widthdrawals.forEach((item: any) => {
-    rows.push({
-      id: item._id,
-      amount: currencyConverter(item.amount.toString()),
-      status: item.status,
-      date: formatDate(item.createdAt),
+  widthdrawals &&
+    widthdrawals.forEach((item: any) => {
+      rows.push({
+        id: item._id,
+        amount: currencyConverter(item.amount),
+        status: item.status,
+        date: formatDate(item.createdAt),
+      });
     });
-  });
 
   return (
     <>
@@ -264,11 +276,11 @@ function page() {
       </div>
       <div className="mt-8 bg-[#f4f4f4]">
         <div className="flex justify-between items-center flex-wrap gap-y-2">
-          <h2 className="text-2xl font-medium">Withdrawal</h2>
+          <h2 className="text-xl sm:text-2xl font-medium">Withdrawal</h2>
           <CustomButton text="Withdraw" handleClick={toggleModal} />
         </div>
-        <div className="mt-4 bg-white rounded-md shadow-sm w-full h-full">
-          <WidthdrawalTable rows={rows} />
+        <div className="">
+          <WidthdrawalTable rows={rows} data={resWithdrawal.data} />
         </div>
       </div>
       <CustomModal open={open} handleClose={toggleModal}>

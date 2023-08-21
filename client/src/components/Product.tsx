@@ -1,6 +1,7 @@
 "use client";
 import React, { useCallback, useRef, useState } from "react";
 import {
+  AiFillCheckCircle,
   AiFillHeart,
   AiOutlineEye,
   AiOutlineHeart,
@@ -17,12 +18,12 @@ import { currencyConverter, truncate } from "@/utils/helperFunc";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
-import { HiOutlineCheckCircle } from "react-icons/hi";
 import {
   addToWishlist,
   removeFromWishlist,
 } from "@/redux/slices/wishlistSlice";
 import Rating from "@mui/material/Rating";
+import Image from "next/image";
 
 function Product({ data }: { data: Product }) {
   const [open, setOpen] = useState(false);
@@ -107,14 +108,15 @@ function Product({ data }: { data: Product }) {
 
   return (
     <div className="relative pr-2 mb-5">
-      <div className="overflow-hidden relative group/icons bg-[#F4F4F4] p-5 h-[280px]">
+      <div className="overflow-hidden group/icons bg-[#F4F4F4] p-5 h-[280px] relative">
         <span className="inline-block text-center text-sm w-14 py-0.5 text-white bg-[#9E0A0F] absolute top-2 right-2 z-[2]">
           {perDiscount()}
         </span>
         <Link href={`/product/${data._id}`}>
-          <img
+          <Image
             src={data.images[0].url}
             alt=""
+            fill
             className="h-full w-full object-contain mix-blend-darken hover:scale-[1.2] transition-transform duration-500"
           />
         </Link>
@@ -155,7 +157,7 @@ function Product({ data }: { data: Product }) {
           >
             <div className="w-10 h-10 border bg-white border-[#323232] center cursor-pointer bg-transparent">
               {itemInCart() ? (
-                <HiOutlineCheckCircle className="text-xl z-10 group-hover:text-white transition-all duration-500 delay-200" />
+                <AiFillCheckCircle className="text-xl z-10 group-hover:text-white transition-all duration-500 delay-200" />
               ) : (
                 <BsCart3 className="text-xl z-10 group-hover:text-white transition-all duration-500 delay-200" />
               )}
@@ -170,8 +172,14 @@ function Product({ data }: { data: Product }) {
       </div>
       <div className="px-4 mt-[22px] text-primary group hover:!text-text-hover">
         <Link
+          href={`/shop/${data.shopId}`}
+          className="inline-block mb-1 font-medium text-white text-xs bg-blue-600 rounded-md py-1 px-2"
+        >
+          {data.shop.name}
+        </Link>
+        <Link
           href={`/product/${data._id}`}
-          className="leading-[20px] text-inherit block truncate font-semibold"
+          className="leading-[20px] text-inherit block truncate font-semibold text-sm"
         >
           {truncate(data.name, 40)}
         </Link>
@@ -248,12 +256,14 @@ function Product({ data }: { data: Product }) {
               {data?.images?.map((img: any, i: any) => (
                 <div
                   key={i}
-                  className="h-full w-full py-5 !flex items-center bg-[#f4f4f4]"
+                  className="h-full w-full py-5 !flex items-center bg-[#f4f4f4] relative"
                 >
-                  <img
+                  <Image
                     key={i}
                     src={img.url}
                     alt=""
+                    fill
+                    priority
                     className="w-[70%] h-[100%] object-contain block mx-auto mix-blend-darken"
                   />
                 </div>
@@ -330,9 +340,11 @@ function Product({ data }: { data: Product }) {
                 </div>
                 <div className="">
                   <div className="flex items-center mb-4">
-                    <img
+                    <Image
                       src={data.shop.avatar.url}
                       alt=""
+                      width={40}
+                      height={40}
                       className="h-[40px] w-[40px] object-contain"
                     />
                     <div className="ml-3">

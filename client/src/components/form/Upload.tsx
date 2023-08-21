@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { RxAvatar } from "react-icons/rx";
@@ -28,11 +29,12 @@ function Upload({ label }: any) {
               className="text-sm font-medium text-primary/70"
             ></label>
             <div className="mt-2 flex items-center">
-              <span className="inline-block h-8 w-8 rounded-full overflow-hidden">
+              <span className="inline-block h-8 w-8 rounded-full overflow-hidden relative">
                 {field.value ? (
-                  <img
+                  <Image
                     src={field.value}
                     alt="avatar"
+                    fill
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (

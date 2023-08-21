@@ -1,5 +1,6 @@
 import BestDeals from "@/components/BestDeals";
 import Carousel from "@/components/Carousel/Carousel";
+import HeroCarousel from "@/components/Carousel/HeroCarousel";
 import Categories from "@/components/Categories";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import NewProducts from "@/components/NewProducts";
@@ -15,7 +16,7 @@ export default async function Home() {
 
   return (
     <div className="">
-      <Carousel />
+      <HeroCarousel />
       <NewProducts />
       <Categories products={products} />
       <BestDeals products={products} />

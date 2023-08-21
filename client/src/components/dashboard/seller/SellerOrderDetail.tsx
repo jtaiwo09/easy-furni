@@ -3,6 +3,7 @@ import CustomButton from "@/components/form/CustomButton";
 import { updateOrderStatus } from "@/services/order";
 import { currencyConverter } from "@/utils/helperFunc";
 import { Country, State } from "country-state-city";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
@@ -28,9 +29,11 @@ function SellerOrderDetail({ order, id }: { order: Order; id: string }) {
           key={item._id}
           className="py-10 border-b border-form-border flex items-center space-x-5"
         >
-          <img
+          <Image
             src={`${item.images[0]?.url}`}
             alt=""
+            width={80}
+            height={80}
             className="w-[80x] h-[80px]"
           />
           <div className="w-full">

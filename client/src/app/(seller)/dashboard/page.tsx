@@ -6,7 +6,8 @@ import { getSellerApiServer } from "@/services/serverApi/seller";
 import { currencyConverter } from "@/utils/helperFunc";
 import { cookies } from "next/headers";
 import React from "react";
-import { BsBagDash, BsBasket, BsCashCoin } from "react-icons/bs";
+import { BsBagDash, BsCashCoin } from "react-icons/bs";
+import { TfiShoppingCartFull } from "react-icons/tfi";
 
 export default async function page() {
   const shopId = cookies().get("seller_id")?.value as string;
@@ -17,7 +18,7 @@ export default async function page() {
   const res: any = await getSellerApiServer();
   const seller = res.seller;
   const orders = resOrders.orders;
-  const availableBalance = seller?.availableBalance.toFixed(2);
+  const availableBalance = seller?.availableBalance;
 
   return (
     <div className="">
@@ -31,7 +32,7 @@ export default async function page() {
           linkText="Withdrawal Money"
         />
         <DashboardCard
-          icon={{ label: BsBasket }}
+          icon={{ label: TfiShoppingCartFull }}
           text="All Orders"
           value={resOrders.totalRecord}
           link="/dashboard/orders"

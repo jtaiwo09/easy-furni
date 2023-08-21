@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import CustomButton from "../form/CustomButton";
 import ProductTable from "./tables/ProductTable";
 import CustomModal from "../CustomModal";
@@ -10,15 +10,25 @@ import TextField from "../form/TextField";
 import CustomSelect from "../form/CustomSelect";
 import { categoriesData } from "@/utils/data";
 import { AiOutlineCloudUpload, AiOutlineEye } from "react-icons/ai";
-import { BiTrashAlt } from "react-icons/bi";
+import { BiLoader, BiTrashAlt } from "react-icons/bi";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import FormHelperText from "@mui/material/FormHelperText";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { createProduct } from "@/redux/slices/productSlice";
+import { useAppSelector } from "@/redux/hook";
 import CurrencyTextField from "../form/CurrencyTextField";
 import TextEditor from "../form/TextEditor";
 import { stripHtml } from "string-strip-html";
 import { toast } from "react-toastify";
+import { deleteCloudinaryImageApi } from "@/services";
+import { baseUrl } from "@/server";
+import { Fetcher } from "@/services/swr";
+import Loader from "../Layout/Loader";
+import {
+  createProductApi,
+  deleteProductApi,
+  updateProductApi,
+} from "@/services/swr/product/fetcher";
+import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 type CreateProductFormData = {
   name: string;
@@ -36,10 +46,10 @@ const schema = yup.object().shape({
   description: yup
     .mixed()
     .test("checkIfEmpty", "Description is required", (v: any) => {
-      return v && stripHtml(v).result.length > 0;
+      return v && stripHtml(v).result?.length > 0;
     })
     .test("checkLength", "Maximum character limit is 2000", (v: any) => {
-      return v && stripHtml(v).result.length <= 2000;
+      return v && stripHtml(v).result?.length <= 2000;
     }),
   category: yup.string().required("Category is required"),
   tags: yup.string().notRequired(),
@@ -66,13 +76,13 @@ const schema = yup.object().shape({
   images: yup
     .mixed()
     .test("checkIfLessThan2", "Please upload at least 2 images", (v: any) => {
-      return v.length >= 2;
+      return v?.length >= 2;
     })
     .test(
       "checkIfGreaterThan3",
       "Please upload not more than 3 images",
       (v: any) => {
-        return v.length <= 3;
+        return v?.length <= 3;
       }
     )
     .nullable(),
@@ -85,21 +95,49 @@ const schema = yup.object().shape({
   // }),
 });
 
-function Products({ data, id }: any) {
-  const dispatch = useAppDispatch();
-  const { seller } = useAppSelector((state) => state.seller);
+function Products({ id }: { id: string }) {
   const { loading } = useAppSelector((state) => state.product);
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [preview, setPreview] = useState("");
-  const [uploadedImages, setUploadedImages] = useState<any>([]);
-  const [ImageIndex, setImageIndex] = useState(null);
+  const [uploadedImages, setUploadedImages] = useState<Image[]>([]);
+  const [ImagePublicId, setImagePublicId] = useState("");
+  const [productId, setProductId] = useState("");
+  const [rawImageData, setRawImageData] = useState<any[]>([]);
+  const [loader, setLoader] = useState(false);
+  const uploads = useRef<Image[]>([]);
+  const [deleteProductModal, setDeleteProductModal] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = useMemo(() => searchParams.get("page") ?? 1, [searchParams]);
+
+  useEffect(() => {
+    async function upload() {
+      if (rawImageData.length > 0) {
+        const res = await uploadToCloudinary(rawImageData);
+        if (res.success) {
+          localStorage.setItem("productId", productId);
+          setUploadedImages((prev) => [...prev, ...res.images]);
+          uploads.current = [...uploads.current, ...res.images];
+          localStorage.setItem(
+            "productImages",
+            JSON.stringify(uploads.current)
+          );
+          setValue("images", uploads.current);
+          setRawImageData([]);
+        }
+      }
+    }
+    upload();
+  }, [rawImageData]);
+
   const {
     register,
     handleSubmit,
     reset,
     setValue,
+    getValues,
     control,
     formState: { errors },
   } = useForm<CreateProductFormData>({
@@ -116,100 +154,202 @@ function Products({ data, id }: any) {
     resolver: yupResolver(schema),
   });
 
+  const { data, error, isLoading, mutate } = Fetcher({
+    url: `product/get-all-products-shop/${id}`,
+    page: Number(page),
+  });
+
+  if (isLoading) return <Loader />;
+
+  if (error) {
+    toast.error(error.message);
+  }
+
+  const products: Product[] = data?.products ?? [];
+
   const toggleModal = () => {
     setOpen((prev) => !prev);
 
     if (open) {
       reset();
+      setProductId("");
       setUploadedImages([]);
     }
   };
 
-  useEffect(() => {
-    setValue("images", uploadedImages);
-  }, [uploadedImages]);
+  const uploadToCloudinary = (images: any) => {
+    setLoader(true);
+    return fetch(`${baseUrl}/util/upload`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ images, path: "products" }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setLoader(false);
+        return res;
+      })
+      .catch((error) => {
+        setLoader(false);
+        toast.error(error);
+      });
+  };
+
+  const base64 = (file: any) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject;
+    });
+  };
 
   const handleImageChange = (e: any) => {
     const files = Array.from(e.target.files);
-    files.forEach((file: any) => {
-      const reader = new FileReader();
 
-      reader.onload = (e: any) => {
-        setUploadedImages((prev: any) => [...prev, e.target.result]);
-      };
-      reader.readAsDataURL(file);
+    files.forEach(async (file: any) => {
+      const result = await base64(file);
+      setRawImageData((prev: any) => [...prev, result]);
     });
   };
 
-  const handleDelete = () => {
-    const newImages = [...uploadedImages].filter((_, i) => i !== ImageIndex);
-    setUploadedImages(newImages);
-    setDeleteModal(false);
-  };
-
-  const onSubmit = async (data: CreateProductFormData) => {
-    const {
-      name,
-      category,
-      description,
-      discountPrice,
-      originalPrice,
-      stock,
-      tags,
-      images,
-    } = data;
-
-    const newForm = new FormData();
-
-    images.forEach((image: string) => {
-      newForm.set("images", image);
-    });
-    newForm.append("name", name);
-    newForm.append("description", description);
-    newForm.append("category", category);
-    newForm.append("tags", tags);
-    newForm.append("originalPrice", originalPrice);
-    newForm.append("discountPrice", discountPrice);
-    newForm.append("stock", stock);
-    newForm.append("shopId", seller?._id);
+  const handleDelete = async () => {
     try {
-      const res = await dispatch(
-        createProduct({ ...data, shopId: seller?._id })
-      ).unwrap();
+      setLoader(true);
+      const res = await deleteCloudinaryImageApi(ImagePublicId);
+      setLoader(false);
       if (res.success) {
-        toast.success("Product created successfully!");
-        toggleModal();
+        const filteredImages = uploadedImages.filter(
+          (img) => img.public_id !== ImagePublicId
+        );
+        setUploadedImages(filteredImages);
+        setValue("images", filteredImages);
+        uploads.current = filteredImages;
+
+        setDeleteModal(false);
+        toast.success(res.message);
       }
     } catch (error: any) {
+      setLoader(false);
       toast.error(error.message);
     }
   };
 
-  const handleShowPreview = (item: any) => {
+  const onSubmit = async (data: CreateProductFormData) => {
+    if (!productId) {
+      const res = await createProductApi({ ...data, shopId: id });
+      if (res.success) {
+        mutate();
+        toast.success("Product created successfully!");
+        toggleModal();
+        localStorage.removeItem("productImages");
+        uploads.current = [];
+      }
+    } else {
+      const res = await updateProductApi({
+        ...data,
+        images: uploadedImages,
+        productId,
+      });
+      if (res.success) {
+        mutate();
+        toast.success("Product updated successfully!");
+        toggleModal();
+        localStorage.removeItem("productImages");
+        localStorage.removeItem("productId");
+        uploads.current = [];
+      }
+    }
+  };
+
+  const handleShowPreview = (url: string) => {
     setShow((prev) => !prev);
-    setPreview(item);
+    setPreview(url);
   };
 
   const closePreview = () => {
     setShow(false);
   };
 
-  const toggleDeleteModal = (index: any) => {
+  const toggleDeleteModal = (publicId: string) => {
     setDeleteModal((prev) => !prev);
-    setImageIndex(index);
+    setImagePublicId(publicId);
+  };
+
+  const edit = (id: string) => {
+    toggleModal();
+    setProductId(id);
+    const product = products.find((el) => el._id === id);
+
+    if (product) {
+      setValue("name", product.name);
+      setValue("description", product.description);
+      setValue("category", product.category);
+      setValue("tags", product.tags);
+      setValue("originalPrice", product.originalPrice);
+      setValue("discountPrice", product.discountPrice);
+      setValue("stock", product.stock);
+      const storageImgs = localStorage.getItem("productImages");
+      const prodId = localStorage.getItem("productId");
+      if (prodId == id) {
+        const parsedImgs = storageImgs
+          ? JSON.parse(storageImgs)
+          : product.images;
+        setValue("images", parsedImgs);
+        setUploadedImages(parsedImgs);
+        uploads.current = parsedImgs;
+      } else {
+        setValue("images", product.images);
+        setUploadedImages(product.images);
+        uploads.current = product.images;
+      }
+    }
+  };
+
+  const deleteProduct = (id: string) => {
+    setProductId(id);
+    setDeleteProductModal(true);
+  };
+
+  const handleDeleteProduct = async () => {
+    try {
+      setLoader(true);
+      const res = await deleteProductApi(productId);
+      setLoader(false);
+      if (res.success) {
+        mutate();
+        setDeleteProductModal(false);
+        toast.success(res.message);
+      }
+    } catch (error: any) {
+      setLoader(false);
+      toast.error(error.message);
+    }
+  };
+
+  const handlePagination = (page: any) => {
+    router.push(`/dashboard/products?page=${page}`);
+    mutate();
   };
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-medium">Products</h2>
+        <h2 className="text-xl sm:text-2xl font-medium">Products</h2>
         <CustomButton text="Create Product" handleClick={toggleModal} />
       </div>
-      <ProductTable data={data} id={id} />
+      <ProductTable
+        data={data}
+        edit={edit}
+        deleteProduct={deleteProduct}
+        handlePagination={handlePagination}
+      />
       <CustomModal open={open} handleClose={toggleModal}>
         <div>
           <h2 className="text-xl uppercase text-center font-semibold">
-            Create Product
+            {productId ? "Update Product" : "Create Product"}
           </h2>
           <form className="mt-5" onSubmit={handleSubmit(onSubmit)}>
             <TextField
@@ -227,14 +367,6 @@ function Products({ data, id }: any) {
               errors={errors}
               control={control}
             />
-            {/* <TextField
-              name="description"
-              label="Description"
-              inputClass="leading-[24px]"
-              formGroup=" mb-4 w-full"
-              register={register}
-              errors={errors}
-            /> */}
             <CustomSelect
               label="Category"
               name="category"
@@ -290,6 +422,7 @@ function Products({ data, id }: any) {
                 name="images"
                 id="upload"
                 className="hidden"
+                disabled={loader}
                 multiple
                 onChange={handleImageChange}
               />
@@ -299,10 +432,14 @@ function Products({ data, id }: any) {
                     htmlFor="upload"
                     className="h-[80px] w-[80px] group cursor-pointer hover:border-blue-400 flex justify-center items-center border-[1.5px] border-dashed border-gray-400 rounded-sm mr-2"
                   >
-                    <AiOutlineCloudUpload
-                      size={30}
-                      className="cursor-pointer text-gray-400 group-hover:text-blue-400"
-                    />
+                    {loader ? (
+                      <BiLoader className="animate-spin text-2xl text-blue-400" />
+                    ) : (
+                      <AiOutlineCloudUpload
+                        size={30}
+                        className="cursor-pointer text-gray-400 group-hover:text-blue-400"
+                      />
+                    )}
                   </label>
                 )}
 
@@ -310,21 +447,22 @@ function Products({ data, id }: any) {
                   uploadedImages.map((item: any, index: any) => (
                     <div
                       key={index}
-                      className="group relative h-[80px] w-[80px] border border-form-border rounded-sm mr-2 last:mr-0 overflow-hidden"
+                      className="relative group h-[80px] w-[80px] border border-form-border rounded-sm mr-2 last:mr-0 overflow-hidden"
                     >
-                      <img
-                        src={item}
+                      <Image
+                        src={item.url}
                         alt=""
+                        fill
                         className="h-full w-full object-contain"
                       />
                       <div className="hidden group-hover:flex absolute top-0 bottom-0 w-full h-full items-center justify-center bg-black/30">
                         <div className="w-fit flex gap-2">
                           <AiOutlineEye
-                            onClick={() => handleShowPreview(item)}
+                            onClick={() => handleShowPreview(item.url)}
                             className="text-white text-lg cursor-pointer"
                           />
                           <BiTrashAlt
-                            onClick={() => toggleDeleteModal(index)}
+                            onClick={() => toggleDeleteModal(item.public_id)}
                             className="text-white text-lg cursor-pointer"
                           />
                         </div>
@@ -340,7 +478,7 @@ function Products({ data, id }: any) {
             </div>
             <CustomButton
               loading={loading}
-              text="Create"
+              text={productId ? "Update" : "Create"}
               type="submit"
               extraClass="mt-10"
             />
@@ -353,9 +491,11 @@ function Products({ data, id }: any) {
         boxStyle="!max-w-[500px]"
       >
         <div className="">
-          <img
+          <Image
             src={preview}
             alt=""
+            width={400}
+            height={400}
             className="w-full h-[400px] object-contain"
           />
         </div>
@@ -363,6 +503,7 @@ function Products({ data, id }: any) {
       <ConfirmationModal
         title="Are you sure, you want to delete this?"
         okText="Delete"
+        loading={loader}
         okBtn={handleDelete}
         cancelBtn={() => setDeleteModal(false)}
         open={deleteModal}
@@ -370,6 +511,18 @@ function Products({ data, id }: any) {
         okBtnClass="bg-red-500 text-white hover:text-red-500 hover:bg-red-500 border !border-[red]"
       >
         <div className="my-5">This will be deleted</div>
+      </ConfirmationModal>
+      <ConfirmationModal
+        title="Do you want to delete this product?"
+        okText="Delete"
+        loading={loader}
+        okBtn={handleDeleteProduct}
+        cancelBtn={() => setDeleteProductModal(false)}
+        open={deleteProductModal}
+        boxStyle="!max-w-[450px]"
+        okBtnClass="bg-red-500 text-white hover:text-red-500 hover:bg-red-500 border !border-[red]"
+      >
+        <div className="my-5">This product will permanently deleted</div>
       </ConfirmationModal>
     </div>
   );

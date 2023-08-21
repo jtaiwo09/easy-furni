@@ -15,7 +15,7 @@ function Footer() {
             href="#"
             className="uppercase mb-5 inline-block text-xl font-semibold text-white"
           >
-            Easy furni
+            JTK STORE
           </Link>
           <ul className="text-[#ccc]">
             <li className="flex items-center mb-5">
@@ -26,7 +26,7 @@ function Footer() {
             </li>
             <li className="flex items-center mb-5">
               <HiOutlineEnvelope className="text-lg mr-4" />
-              <span className="inline-block text-sm">easyfurni@gmail.com</span>
+              <span className="inline-block text-sm">ktaiwo660@gmail.com</span>
             </li>
             <li className="flex items-center mb-5">
               <HiOutlinePhone className="text-lg mr-4" />
@@ -99,7 +99,7 @@ function Footer() {
         </div>
       </div>
       <div className="border-t border-borderCol/50 w-full px-5 md:px-7 py-6 text-center text-sm">
-        © Easy Furni. All Rights Reserved.
+        © JTK STORE. All Rights Reserved.
       </div>
     </div>
   );

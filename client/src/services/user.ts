@@ -112,6 +112,36 @@ const deleteUserAddressApi = async (data: string) => {
   }
 };
 
+const requestPasswordResetApi = async (data: any) => {
+  const res = await fetch(`${baseUrl}/user/request-reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  if (res.ok) {
+    return result;
+  }
+  throw new Error(result.message);
+};
+
+const resetPasswordApi = async (data: any) => {
+  const res = await fetch(`${baseUrl}/user/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  if (res.ok) {
+    return result;
+  }
+  throw new Error(result.message);
+};
+
 export {
   getUserApi,
   updateUserInformationApi,
@@ -120,4 +150,6 @@ export {
   updateDefaultAddressApi,
   editUserAddressApi,
   deleteUserAddressApi,
+  requestPasswordResetApi,
+  resetPasswordApi,
 };

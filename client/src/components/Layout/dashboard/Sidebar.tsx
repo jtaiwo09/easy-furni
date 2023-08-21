@@ -10,7 +10,7 @@ function Sidebar() {
   const [open, setOpen] = useState(true);
   const path = usePathname();
   return (
-    <div className="bg-white mt-4 h-[85vh] overflow-scroll !z-[90]">
+    <div className="bg-white mt-4 h-[85vh] overflow-scroll !z-[90] hidden sm:block">
       <div className="h-[50px] p-2 border-b">
         <button
           onClick={() => setOpen((prev) => !prev)}

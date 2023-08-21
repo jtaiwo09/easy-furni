@@ -15,6 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import Badge from "../Badge";
+import Image from "next/image";
 
 const schema = yup.object().shape({
   rating: yup.number().required("Rating is required"),
@@ -121,9 +122,11 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
             className="py-10 border-b border-form-border flex justify-between"
           >
             <div className="flex items-center space-x-5">
-              <img
+              <Image
                 src={`${item.images[0]?.url}`}
                 alt=""
+                width={80}
+                height={80}
                 className="w-[80x] h-[80px]"
               />
               <div className="w-full">
@@ -218,10 +221,12 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
           </h2>
           {selectedItem ? (
             <div className="flex items-center space-x-5">
-              <img
+              <Image
                 src={`${selectedItem.images[0]?.url}`}
                 alt=""
-                className="w-[80x] h-[80px]"
+                width={80}
+                height={80}
+                className="w-[80px] h-[80px]"
               />
               <div className="w-full">
                 <h5 className=" text-xl mb-1 ">{selectedItem.name}</h5>
@@ -294,7 +299,7 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
             <div className="grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-3">
               {order.cart.map((item) => (
                 <div
-                  className={`cursor-pointer flex items-center h-[80px] bg-white border-solid rounded-sm p-2 overflow-hidden ${
+                  className={`relative cursor-pointer flex items-center h-[80px] bg-white border-solid rounded-sm p-2 overflow-hidden ${
                     selectedItemForReturn.includes(item._id)
                       ? "border-text-hover border bg-text-hover/[0.05] select-none"
                       : "border"
@@ -304,9 +309,10 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
                     selectReturnItemHandler(item._id);
                   }}
                 >
-                  <img
+                  <Image
                     src={item?.images[0]?.url}
                     alt=""
+                    fill
                     className="h-full w-auto object-contain mix-blend-darken"
                   />
                   <div className="px-3">

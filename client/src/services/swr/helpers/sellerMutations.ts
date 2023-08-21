@@ -7,10 +7,10 @@ import {
 import { AddPaymentMethod } from "@/app/(seller)/dashboard/payment/page";
 
 // Update seller Info
-export const updateMutation = async (newData: SellerFormData, seller: any) => {
-  const updated = await updateSellerInformationApi(newData);
-  return { ...seller, ...updated };
-};
+// export const updateMutation = async (newData: SellerFormData, seller: any) => {
+//   const updated = await updateSellerInformationApi(newData);
+//   return { ...seller, ...updated };
+// };
 
 // Update Seller Bank Details
 export const createBankMutation = async (

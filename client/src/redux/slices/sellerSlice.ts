@@ -1,4 +1,4 @@
-import { SellerLoginFormData } from "@/app/(auth)/shop-login/page";
+import { SellerLoginFormData } from "@/app/(auth)/shop/login/page";
 import { loginSeller, logoutSeller } from "@/services/auth";
 import { getSellerApi } from "@/services/seller";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";

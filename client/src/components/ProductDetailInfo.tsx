@@ -12,6 +12,7 @@ import {
   removeFromWishlist,
 } from "@/redux/slices/wishlistSlice";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 function ProductDetailInfo({
   data,
@@ -49,9 +50,9 @@ function ProductDetailInfo({
 
   return (
     <div className="w-full lg:w-[60%]">
-      <h1 className="text-2xl sm:text-3xl font-medium">{data.name}</h1>
+      <h1 className="text-xl sm:text-2xl font-medium">{data.name}</h1>
       <p className="flex items-center my-3 sm:my-5  font-medium text-primary">
-        <span className="mr-4 inline-block text-xl smm:text-2xl">
+        <span className="mr-4 inline-block text-lg sm:text-2xl">
           {currencyConverter(data.discountPrice)}
         </span>
         <sup className="line-through text-red-400 text-sm sm:text-base ">
@@ -73,9 +74,11 @@ function ProductDetailInfo({
       </div>
       <div className="flex flex-wrap gap-4 sm:gap-6">
         <div className="flex items-center mb-4">
-          <img
+          <Image
             src={data.shop.avatar.url}
             alt=""
+            width={40}
+            height={40}
             className="h-[40px] w-[40px] object-cover"
           />
           <div className="ml-3">

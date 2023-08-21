@@ -81,8 +81,11 @@ function page() {
               <input id="remember" type="checkbox" className="mr-2" />
               Remember me
             </label>
-            <Link href="#" className="hover:underline underline-offset-2">
-              Lost your password?
+            <Link
+              href="/forgot-password"
+              className="hover:underline underline-offset-2"
+            >
+              Forgot your password?
             </Link>
           </Stack>
           <CustomButton

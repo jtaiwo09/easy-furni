@@ -17,7 +17,7 @@ function page() {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-medium">Coupons</h2>
+        <h2 className="text-xl sm:text-2xl font-medium">Coupons</h2>
         <CustomButton text="Create Coupon" />
       </div>
       <div className="mt-4 bg-white rounded-md shadow-sm w-full h-full">

@@ -13,20 +13,25 @@ import {
 import { currencyConverter } from "@/utils/helperFunc";
 import { LinearProgress } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import { toast } from "react-toastify";
 
 function PaymentTable() {
-  const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [updateRequestModal, setUpdateRequestModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [withdrawStatus, setWithdrawStatus] = useState("Processing");
   const [withdrawData, setWithdrawData] = useState<any>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") ?? 1;
+
   const { data, isLoading, error, mutate } = Fetcher({
     url: "withdraw/get-all-withdraw-request",
-    page,
+    page: Number(page),
   });
 
   if (isLoading) return <Loader />;
@@ -119,7 +124,7 @@ function PaymentTable() {
   });
 
   const handleChangePage = async (e: any, page: any) => {
-    setPage(page);
+    router.push(`/admin-dashboard/payment?page=${page}`);
     mutate();
   };
 
@@ -177,7 +182,6 @@ function PaymentTable() {
       <CustomPagination
         data={{ totalPages, totalRecord }}
         handleChangePage={handleChangePage}
-        page={page}
       />
       <ConfirmationModal
         title="Do you want to delete this request?"

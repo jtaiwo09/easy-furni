@@ -48,13 +48,6 @@ export type FormData = {
 function page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  // const { isAuthenticated } = useAppSelector((state) => state.user);
-
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     router.push("/");
-  //   }
-  // }, [isAuthenticated]);
 
   const onSubmit = async (data: any, reset: any) => {
     setIsLoading(true);
@@ -63,7 +56,7 @@ function page() {
     setIsLoading(false);
     if (res.ok) {
       toast.success(result.message);
-      router.push("/shop-login");
+      router.push("/shop/login");
       reset();
     } else {
       toast.error(result.message);
@@ -130,7 +123,7 @@ function page() {
           <p className="">
             Already have an account?{" "}
             <Link
-              href="/shop-login"
+              href="/shop/login"
               className="hover:underline underline-offset-2 text-blue-600 "
             >
               Login

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Link from "next/link";
 import Button from "@mui/material/Button";
@@ -8,16 +8,21 @@ import { currencyConverter, formatDate } from "@/utils/helperFunc";
 import CustomPagination from "@/components/Layout/CustomPagination";
 import LinearProgress from "@mui/material/LinearProgress";
 import { toast } from "react-toastify";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Badge from "@/components/Badge";
 import { Fetcher } from "@/services/swr";
 import Loader from "@/components/Layout/Loader";
 
 function OrderTable() {
-  const [page, setPage] = useState(1);
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page") ?? 1;
 
-  const resOrders = Fetcher({ url: "order/admin-all-orders", page });
+  const resOrders = Fetcher({
+    url: "order/admin-all-orders",
+    page: Number(page),
+  });
 
   if (resOrders.isLoading) return <Loader />;
 
@@ -105,7 +110,7 @@ function OrderTable() {
   });
 
   const handleChangePage = async (e: any, page: any) => {
-    setPage(page);
+    router.push(`/admin-dashboard/orders?page=${page}`);
     resOrders.mutate();
   };
 
@@ -125,7 +130,6 @@ function OrderTable() {
         <CustomPagination
           data={{ totalPages, totalRecord }}
           handleChangePage={handleChangePage}
-          page={page}
         />
       )}
     </>
