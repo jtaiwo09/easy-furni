@@ -27,7 +27,7 @@ app.use(express.static("public"));
 app.use(
   cors({
     credentials: true,
-    origin: "https://jtk-store-292uh57f6-jtaiwo09.vercel.app",
+    origin: "https://jtk-store.vercel.app",
   })
 );
 app.use(express.json({ limit: "50mb" }));
