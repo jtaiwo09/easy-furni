@@ -50,13 +50,5 @@ app.use("/api/v1/order", order);
 app.use("/api/v1/withdraw", withdraw);
 app.use("/api/v1/util", util);
 
-app.get("/", (req, res) => {
-  res.render("product_return", {
-    name: "Taiwo joseph",
-    reason: "No reason",
-    // style: "css/return.css",
-  });
-});
-
 app.use(ErrorHandler);
 module.exports = app;
