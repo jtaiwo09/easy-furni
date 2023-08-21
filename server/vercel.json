@@ -1,9 +1,9 @@
 {
     "version": 2,
-    "redirects": [
-        { "source": "/(.*)", "destination": "/" }
-      ],
     "builds":[
         { "src": "*.js", "use": "@vercel/node" }
+    ],
+    "routes":[
+        { "src": "/(.*)", "dest": "/" }
     ]
 }
