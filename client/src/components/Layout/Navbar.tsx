@@ -10,22 +10,22 @@ import { AiOutlineBars, AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
 import { categoriesData, productData } from "@/utils/data";
 import CategoriesData from "../CategoriesData";
 import LoginIcon from "@mui/icons-material/Login";
-import {
-  Avatar,
-  Box,
-  Divider,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
 import CartDrawer from "../CartDrawer";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { toast } from "react-toastify";
 import WishlistDrawer from "../WishlistDrawer";
 import { useRouter } from "next/navigation";
 import { getUser, logout } from "@/redux/slices/userSlice";
+import { getSeller } from "@/redux/slices/sellerSlice";
+import Image from "next/image";
 
 function Navbar({
   sellerToken,
@@ -52,10 +52,16 @@ function Navbar({
     if (token) {
       dispatch(getUser());
     }
+    if (sellerToken) {
+      dispatch(getSeller());
+    }
+  }, [token, sellerToken]);
+
+  useEffect(() => {
     window.addEventListener("scroll", function () {
       const currentScrollPos = window.pageYOffset;
       setPos(currentScrollPos);
-      if (currentScrollPos > 150) {
+      if (currentScrollPos > 10) {
         setShowNav(true);
       } else {
         setShowNav(false);
@@ -106,6 +112,10 @@ function Navbar({
     setAnchorEl(null);
   };
 
+  const closeMobileNav = () => {
+    setToggleNavDropdown(false);
+  };
+
   return (
     <div
       style={{
@@ -113,7 +123,7 @@ function Navbar({
       }}
       className={`${
         showNav
-          ? "bg-white fixed top-0 shadow-md transition-all duration-[1200ms]"
+          ? "bg-white fixed top-0 shadow-md transition-all duration-[0.8s]"
           : "bg-transparent absolute"
       } w-full z-[98]`}
     >
@@ -121,9 +131,9 @@ function Navbar({
         <div className="align-center h-[70px] flex justify-between">
           <Link
             href="/"
-            className="uppercase inline-block font-semibold text-2xl"
+            className="uppercase inline-block font-semibold text-xl sm:text-2xl"
           >
-            Easy Furni
+            JTK STORE
           </Link>
 
           <div className="hidden lg:block h-full">
@@ -142,30 +152,30 @@ function Navbar({
                   </li>
                   <li>
                     <Link
-                      href="#"
+                      href="/product"
                       className="hover:text-text-hover font-semibold"
                     >
                       Products
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       href="#"
                       className="hover:text-text-hover font-semibold"
                     >
                       Best Selling
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link
-                      href="#"
+                      href="/faq"
                       className="hover:text-text-hover font-semibold"
                     >
                       FAQ
                     </Link>
                   </li>
                   <li>
-                    <Link href={sellerToken ? "/dashboard" : "/shop-create"}>
+                    <Link href={sellerToken ? "/dashboard" : "/shop/signup"}>
                       <CustomButton
                         type="button"
                         text={sellerToken ? "Dashboard" : "Become Seller"}
@@ -199,9 +209,11 @@ function Navbar({
                               className="block mb-2 hover:bg-slate-100  hover:font-medium px-4 text-sm"
                             >
                               <div className="w-full flex items-center py-3">
-                                <img
+                                <Image
                                   src={data.image_Url[0].url}
                                   alt="product"
+                                  width={40}
+                                  height={40}
                                   className="w-10 h-10 mr-2.5"
                                 />
                                 <h1>{product_name}</h1>
@@ -220,7 +232,7 @@ function Navbar({
               </div>
             )}
           </div>
-          <div className="align-center h-full flex items-center gap-3">
+          <div className="align-center h-full flex items-center gap-1 sm:gap-3">
             <div className="hidden lg:block">
               {!showSearch ? (
                 <Tooltip title="Search">
@@ -259,15 +271,6 @@ function Navbar({
                   </span>
                 </IconButton>
               </Tooltip>
-
-              {/* <div className="shadow-lg z-[10] bg-white absolute  rounded-md p-4 w-[400px] h-[300px] -right-5 top-[100%] hidden group-hover:flex justify-center items-center">
-                <div className="">
-                  <GiShoppingCart className="text-8xl text-black/20 block mx-auto" />
-                  <p className="text-sm font-medium text-black/70">
-                    Your cart is currently empty
-                  </p>
-                </div>
-              </div> */}
             </div>
             <div className="relative  h-full flex items-center cursor-pointer group">
               <Tooltip title="Profile">
@@ -371,7 +374,7 @@ function Navbar({
       <div
         className={`${
           toggleNavDropdown ? "translate-y-[0px] " : "-translate-y-[100%]"
-        } transition-all duration-[1s] bg-white  w-full absolute top-0 p-8 h-screen -z-[1] pt-[70px]`}
+        } transition-all duration-[1s] bg-white  w-full absolute top-0 px-4 h-screen -z-[1] pt-[70px]`}
       >
         <form onSubmit={handleSearch}>
           <div className="relative border border-borderCol mt-4">
@@ -379,8 +382,8 @@ function Navbar({
               value={searchTerm}
               onChange={handleSearch}
               type="text"
-              placeholder="Search for products"
-              className="py-2.5 pl-3 w-full focus:outline-none"
+              placeholder="Search for products..."
+              className="py-2 pl-3 w-full focus:outline-none text-sm"
             />
             <FiSearch className="text-2xl absolute top-0 bottom-0 my-auto right-2 text-gray-400" />
             {searchTerm ? (
@@ -396,9 +399,11 @@ function Navbar({
                           className="block mb-2 hover:bg-slate-100  hover:font-medium px-4 text-sm"
                         >
                           <div className="w-full flex items-center py-3">
-                            <img
+                            <Image
                               src={data.image_Url[0].url}
                               alt="product"
+                              width={40}
+                              height={40}
                               className="w-10 h-10 mr-2.5"
                             />
                             <h1>{product_name}</h1>
@@ -416,6 +421,63 @@ function Navbar({
             ) : null}
           </div>
         </form>
+        <ul className="flex flex-col gap-4 mt-5">
+          <li className="relative h-full flex items-center group cursor-pointer select-none">
+            <Link
+              href="#"
+              className="flex items-center group-hover:text-text-hover font-semibold"
+            >
+              All Categories
+              <BiChevronDown className="text-xl text-[rgba(112,112,112,1)] group-hover:text-text-hover" />
+            </Link>
+            <CategoriesData categoriesData={categoriesData} />
+          </li>
+          <li onClick={closeMobileNav} className="w-fit">
+            <Link
+              href="/product"
+              className="hover:text-text-hover font-semibold"
+            >
+              Products
+            </Link>
+          </li>
+          {/* <li onClick={closeMobileNav} className="w-fit">
+            <Link href="#" className="hover:text-text-hover font-semibold">
+              Best Selling
+            </Link>
+          </li> */}
+          <li onClick={closeMobileNav} className="w-fit">
+            <Link href="#" className="hover:text-text-hover font-semibold">
+              FAQ
+            </Link>
+          </li>
+
+          <li className="w-fit" onClick={closeMobileNav}>
+            {token ? (
+              <button
+                className="bg-red-500 min-w-[100px] py-2 rounded-md text-white text-center text-sm font-medium"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="font-medium text-sm min-w-[100px] bg-text-hover inline-block py-2 text-white rounded-md text-center"
+              >
+                Login
+              </Link>
+            )}
+          </li>
+          <li>
+            <Link href={sellerToken ? "/dashboard" : "/shop/signup"}>
+              <CustomButton
+                type="button"
+                text={sellerToken ? "Dashboard" : "Become Seller"}
+                extraClass="uppercase w-full !text-xs rounded-[4px]"
+              />
+            </Link>
+          </li>
+        </ul>
       </div>
       <CartDrawer toggleModal={toggleCartModal} showCart={showCart} />
       <WishlistDrawer

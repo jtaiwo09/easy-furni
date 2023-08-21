@@ -1,5 +1,3 @@
-import { AddressFormData } from "@/components/Account/Address";
-import { ChangePasswordFormData } from "@/components/Account/ChangePassword";
 import { baseUrl } from "@/server";
 
 const getUserApi = async () => {
@@ -31,7 +29,7 @@ const updateUserInformationApi = async (data: any) => {
   }
 };
 
-const updateUserPasswordApi = async (data: ChangePasswordFormData) => {
+const updateUserPasswordApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-user-password`, {
       method: "PUT",
@@ -48,7 +46,7 @@ const updateUserPasswordApi = async (data: ChangePasswordFormData) => {
   }
 };
 
-const updatUserAddressApi = async (data: AddressFormData) => {
+const updatUserAddressApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-user-addresses`, {
       method: "PUT",
@@ -114,6 +112,36 @@ const deleteUserAddressApi = async (data: string) => {
   }
 };
 
+const requestPasswordResetApi = async (data: any) => {
+  const res = await fetch(`${baseUrl}/user/request-reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  if (res.ok) {
+    return result;
+  }
+  throw new Error(result.message);
+};
+
+const resetPasswordApi = async (data: any) => {
+  const res = await fetch(`${baseUrl}/user/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  if (res.ok) {
+    return result;
+  }
+  throw new Error(result.message);
+};
+
 export {
   getUserApi,
   updateUserInformationApi,
@@ -122,4 +150,6 @@ export {
   updateDefaultAddressApi,
   editUserAddressApi,
   deleteUserAddressApi,
+  requestPasswordResetApi,
+  resetPasswordApi,
 };

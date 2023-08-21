@@ -7,6 +7,7 @@ import Product from "./Product";
 import { fetchNewProduct } from "@/services/product";
 import { toast } from "react-toastify";
 import { BiLoader } from "react-icons/bi";
+import { Fetcher } from "@/services/swr";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -40,26 +41,24 @@ function a11yProps(index: number) {
 
 function NewProducts() {
   const [value, setValue] = useState(0);
-  const [filterByCategory, setFilterByCategory] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  const tabs = useMemo(() => ["Sofa", "Dinning", "Table", "Chair", "Bed"], []);
+  const tabs = useMemo(() => ["Cloths", "Shoes", "Accessories", "others"], []);
+
+  const { data, error, isLoading, mutate } = Fetcher({
+    url: `product/get-all-products?category=${tabs[value]}`,
+  });
+
+  if (error) {
+    toast.error(error.message);
+  }
+  const filterByCategory: Product[] = data?.products;
 
   const handleChange = async (
     event: React.SyntheticEvent,
     newValue: number
   ) => {
-    setLoading(true);
     setValue(newValue);
-    const category = tabs[newValue];
-    const res = await fetchNewProduct(category);
-    const data = await res.json();
-    setLoading(false);
-    if (res.ok) {
-      setFilterByCategory(data.products);
-    } else {
-      toast.error(data.message);
-    }
+    mutate();
   };
 
   return (
@@ -88,7 +87,7 @@ function NewProducts() {
 
         {tabs.map((item, i) => (
           <TabPanel key={item} value={value} index={i}>
-            {loading ? (
+            {isLoading ? (
               <div className="w-full h-[100px] flex justify-center items-center">
                 <BiLoader className="animate-spin text-4xl" />
               </div>

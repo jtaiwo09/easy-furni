@@ -3,6 +3,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
 import { removeFromWishlist } from "@/redux/slices/wishlistSlice";
 import { currencyConverter, truncate } from "@/utils/helperFunc";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
@@ -20,8 +21,8 @@ function ProductItem({
   const dispatch = useAppDispatch();
 
   const increment = () => {
-    if (product.stock < value) {
-      toast.error("Product stock limited!");
+    if (product.stock <= value) {
+      toast.error("Product is out of stock");
     } else {
       setValue(value + 1);
       const updateCartData = { ...product, qty: value + 1 };
@@ -44,7 +45,7 @@ function ProductItem({
 
   const handleAddToCart = () => {
     if (product.stock < 1) {
-      toast.error("Product stock limited!");
+      toast.error("Product is out of stock");
     } else {
       const updateCartData = { ...product, qty: 1 };
       dispatch(addToCart(updateCartData));
@@ -72,9 +73,11 @@ function ProductItem({
             </button>
           </div>
         ) : null}
-        <img
+        <Image
           src={product.images[0].url}
           alt=""
+          width={80}
+          height={80}
           className="w-[80px] h-[80px] object-contain"
         />
         <div className="">

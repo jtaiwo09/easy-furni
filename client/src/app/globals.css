@@ -42,6 +42,25 @@
   display: none !important;
 }
 
+.rw-widget-input {
+  border-radius: none !important;
+  box-shadow: none !important;
+}
+
+.rw-widget-picker {
+  border-radius: 0px !important;
+  min-height: 46px !important;
+  border: 1px solid #ddd !important;
+}
+
+.rw-widget-picker:focus {
+  outline: none !important;
+}
+
+/* .rw-dropdown-list-input {
+  background-color: yellow !important;
+} */
+
 /* .MuiButtonBase-root {
   @apply hover:text-primary hover:!bg-transparent transition-all duration-300 bg-primary text-white border border-solid !border-primary tracking-[0.5px] text-xs leading-[24px] font-bold uppercase px-6 py-[9px] shadow-none rounded-none cursor-pointer focus:outline-none min-w-[160px];
 } */

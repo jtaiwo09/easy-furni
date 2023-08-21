@@ -43,6 +43,10 @@ const shopSchema = new mongoose.Schema(
         required: true,
       },
     },
+    blocked: {
+      type: Boolean,
+      default: false,
+    },
     withdrawMethod: {
       type: Object,
     },
@@ -50,7 +54,7 @@ const shopSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    transections: [
+    transactions: [
       {
         amount: {
           type: Number,

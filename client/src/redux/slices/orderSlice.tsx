@@ -1,5 +1,4 @@
 import { getAllUsersOrdersApi } from "@/services/order";
-import { createProductApi } from "@/services/product";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface OrderState {

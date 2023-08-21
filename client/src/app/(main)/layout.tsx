@@ -6,7 +6,6 @@ import Navbar from "@/components/Layout/Navbar";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
 import Loading from "./loading";
-import { redirect } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 

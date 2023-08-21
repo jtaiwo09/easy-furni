@@ -6,9 +6,9 @@ import Lamp from "public/images/category/lamp.jpeg";
 import Table from "public/images/category/table.jpeg";
 import Bed from "public/images/category/bed.jpeg";
 
-import { BsCashCoin, BsLamp } from "react-icons/bs";
+import { BsBox2, BsCashCoin, BsLamp } from "react-icons/bs";
 import { LuSofa } from "react-icons/lu";
-import { BiBed } from "react-icons/bi";
+import { BiBed, BiUser } from "react-icons/bi";
 import { MdOutlineTableRestaurant } from "react-icons/md";
 
 //Product
@@ -762,7 +762,8 @@ import { RxDashboard } from "react-icons/rx";
 import { BsBagDash, BsBasket } from "react-icons/bs";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import { AiOutlineGift } from "react-icons/ai";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoPeopleOutline, IoSettingsOutline } from "react-icons/io5";
+import { TfiShoppingCartFull } from "react-icons/tfi";
 
 export const sidebar = [
   {
@@ -772,7 +773,7 @@ export const sidebar = [
   },
   {
     link: "/dashboard/orders",
-    icon: BsBasket,
+    icon: TfiShoppingCartFull,
     text: "Orders",
   },
   {
@@ -785,11 +786,11 @@ export const sidebar = [
     icon: BsCashCoin,
     text: "Widthdraw Money",
   },
-  {
-    link: "/dashboard/inbox",
-    icon: BiMessageSquareDetail,
-    text: "Messages",
-  },
+  // {
+  //   link: "/dashboard/inbox",
+  //   icon: BiMessageSquareDetail,
+  //   text: "Messages",
+  // },
   {
     link: "/dashboard/coupons",
     icon: AiOutlineGift,
@@ -804,5 +805,86 @@ export const sidebar = [
     link: "/dashboard/settings",
     icon: IoSettingsOutline,
     text: "Settings",
+  },
+];
+
+export const adminSidebar = [
+  {
+    link: "/admin-dashboard",
+    icon: RxDashboard,
+    text: "Dashboard",
+  },
+  {
+    link: "/admin-dashboard/orders",
+    icon: TfiShoppingCartFull,
+    text: "Orders",
+  },
+  {
+    link: "/admin-dashboard/products",
+    icon: BsBox2,
+    text: "Products",
+  },
+  {
+    link: "/admin-dashboard/sellers",
+    icon: IoPeopleOutline,
+    text: "Sellers",
+  },
+  {
+    link: "/admin-dashboard/users",
+    icon: BiUser,
+    text: "Users",
+  },
+  {
+    link: "/admin-dashboard/payment",
+    icon: BsCashCoin,
+    text: "Payment Request",
+  },
+  {
+    link: "/admin-dashboard/inbox",
+    icon: BiMessageSquareDetail,
+    text: "Messages",
+  },
+  {
+    link: "/admin-dashboard/refunds",
+    icon: AiOutlineGift,
+    text: "Refunds",
+  },
+  {
+    link: "/profile",
+    icon: IoSettingsOutline,
+    text: "Settings",
+  },
+];
+
+export const faqs = [
+  {
+    question: "What is your return policy?",
+    answer:
+      "If you're not satisfied with your purchase, we accept returns within 3 days of delivery. To initiate a return, please email us at support@myecommercestore.com with your order number and a brief explanation of why you're returning the item.",
+    index: "tab1",
+  },
+  {
+    question: "How do i track my order?",
+    answer:
+      "You can track your order by clicking the tracking link in your shipping confirmation email, or by logging into your account on our website and viewing the order details.",
+    index: "tab2",
+  },
+  {
+    question: "How do i contact customer support",
+    answer:
+      "You can contact our customer support team by emailing us at support@myecommercestore.com, or by calling us at (555) 123-4567 between the hours of 9am and 5pm EST, Monday through Friday.",
+    index: "tab3",
+  },
+  {
+    question: "How can i cancel my order",
+    answer:
+      "Unfortunately, once an order has been placed, we are not able to make changes or cancellations. If you no longer want the items you've ordered, you can return them for a refund within 30 days of delivery.",
+    index: "tab4",
+  },
+  {
+    question: "What payment methods do you accept",
+    answer:
+      "We accept visa, mastercard payment method also we have cash on delivery system.",
+    index: "tab5",
   },
 ];

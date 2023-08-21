@@ -23,12 +23,41 @@ const createProductApi = async (data: any) => {
   }
 };
 
-async function getShopProducts(id: any) {
-  const res = await fetch(`${baseUrl}/product/get-all-products-shop/${id}`);
-  if (res.ok) {
-    return res.json();
+const updateProductApi = async (data: any) => {
+  const { productId, ...rest } = data;
+  try {
+    const res = await fetch(`${baseUrl}/product/update-product/${productId}`, {
+      credentials: "include",
+      method: "PUT",
+      body: JSON.stringify({ ...rest }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res;
+  } catch (error) {
+    return error;
   }
-  return null;
+};
+
+async function getShopProducts(
+  id: any,
+  filterObject = {},
+  page = 1,
+  limit = 10
+) {
+  const params = new URLSearchParams(filterObject);
+  const res = await fetch(
+    `${baseUrl}/product/get-all-products-shop/${id}?${params}&page=${page}&limit=${limit}`
+  );
+  const result = await res.json();
+  if (res.ok) {
+    return result;
+  }
+  if (result.message == "This page does not exist") {
+    return null;
+  }
+  throw new Error(result.message);
 }
 
 async function getAProductApi(productId: any) {
@@ -40,11 +69,16 @@ async function getAProductApi(productId: any) {
   return data.product;
 }
 
-async function getAllProducts() {
-  const res = await fetch(`${baseUrl}/product/get-all-products`);
+async function getAllProducts(filterObject = {}, page = 1, limit = 10) {
+  const params = new URLSearchParams(filterObject);
+  const res = await fetch(
+    `${baseUrl}/product/get-all-products?${params}&page=${page}&limit=${limit}`,
+    {
+      next: { revalidate: 3 },
+    }
+  );
   if (res.ok) {
-    const data = await res.json();
-    return data.products;
+    return await res.json();
   }
   return null;
 }
@@ -68,4 +102,5 @@ export {
   getAllProducts,
   getShopProducts,
   createProductReviewApi,
+  updateProductApi,
 };

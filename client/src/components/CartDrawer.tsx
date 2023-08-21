@@ -42,7 +42,7 @@ function CartDrawer({ toggleModal, showCart }: IProps) {
         </div>
         <div className="h-[calc(100vh-97px)] px-4 pt-6 pb-4 relative">
           {cart.length > 0 ? (
-            <div className="h-[calc(100vh-298px)] overflow-y-auto">
+            <div className="h-[calc(100vh-252px)] overflow-y-auto">
               {cart.map((product) => (
                 <ProductItem key={product._id} product={product} />
               ))}
@@ -72,9 +72,9 @@ function CartDrawer({ toggleModal, showCart }: IProps) {
                   extraClass="w-full"
                 />
               </Link>
-              <Link href="#">
+              {/* <Link href="#">
                 <CustomButton text="View Cart" extraClass="w-full mt-2" />
-              </Link>
+              </Link> */}
             </div>
           ) : null}
         </div>

@@ -1,0 +1,25 @@
+<div style="max-width:600px;margin:auto;background:white">
+  <p style="font-size: 24px; font-weight: 700;">Hi, {{name}}</p>
+  <p style="font-size: 16px;">We are sorry to inform you that the buyer has
+    requested to return the product for the reason:
+    {{reason}}</p>
+
+  <div style="margin-top:10px">
+    {{#each product as |prod|}}
+      <div style="display: flex;align-items: center;">
+        {{#productImage prod.images}}
+          <img
+            src={{url}}
+            alt="product image"
+            style="width: 60px;height: 60px;object-fit: contain; margin-right: 5px;"
+          />
+        {{/productImage}}
+
+        <div style="">
+          <p style="font-size: 16px;margin-bottom: 3px;">{{prod.name}}</p>
+          <p style="font-size: 14px;">{{prod.discountPrice}}</p>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>

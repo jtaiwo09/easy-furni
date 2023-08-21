@@ -8,14 +8,14 @@ function CategoriesData({ categoriesData }: any) {
         categoriesData.map((data: any) => (
           <li key={data.id}>
             <Link
-              href={`/products?category=${data.title}`}
-              className="flex items-center h-full text-sm py-1.5 hover:text-text-hover hover:font-medium whitespace-nowrap transition-all duration-300"
+              href={`/product?category=${data.title}`}
+              className="flex items-center h-full text-sm py-1.5 font-medium hover:text-text-hover hover:font-medium whitespace-nowrap transition-all duration-300"
             >
-              <img
+              {/* <img
                 src={data.image_Url}
                 alt=""
                 className="h-[25px] w-[25px] object-contain mr-2.5 select-none"
-              />
+              /> */}
               {data.title}
             </Link>
           </li>

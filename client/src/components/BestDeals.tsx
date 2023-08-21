@@ -34,6 +34,20 @@ function BestDeals({ products }: any) {
     // speed: 4000,
     autoplaySpeed: 4000,
     // cssEase: "linear",
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: data?.length >= 2 ? 2 : 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   if (!data?.length) return <Loader />;
@@ -43,7 +57,7 @@ function BestDeals({ products }: any) {
       <h1 className="text-[24px] mb-5 font-bold leading-[30px] tracking-[1px] text-primary text-center">
         Best Deals
       </h1>
-      <div className="px-[40px] py-5 w-full">
+      <div className="sm:px-[40px] py-5 w-full">
         {data ? (
           <Slider {...settings} className="">
             {data.length &&

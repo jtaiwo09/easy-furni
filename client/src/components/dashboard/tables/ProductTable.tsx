@@ -1,11 +1,21 @@
 "use client";
-import { Button } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import Link from "next/link";
+import CustomPagination from "@/components/Layout/CustomPagination";
+import { currencyConverter } from "@/utils/helperFunc";
+import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import React from "react";
-import { AiOutlineEye } from "react-icons/ai";
+import { useRouter } from "next/navigation";
 
-function ProductTable({ rows }: any) {
+interface IProps {
+  data: any;
+  edit: any;
+  handlePagination: any;
+  deleteProduct: any;
+}
+
+function ProductTable({ data, edit, handlePagination, deleteProduct }: IProps) {
+  const products: Product[] = data?.products ?? [];
+  const router = useRouter();
+
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
     {
@@ -39,31 +49,68 @@ function ProductTable({ rows }: any) {
       field: "Preview",
       flex: 0.8,
       minWidth: 100,
-      headerName: "Preview",
-      type: "number",
+      headerName: "Action",
       sortable: false,
-      renderCell: (params: any) => {
-        return (
-          <>
-            <Link href={`/product/${params.id}`}>
-              <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+      type: "actions",
+      getActions: (params: any) => [
+        <GridActionsCellItem
+          label="View"
+          onClick={() => router.push(`/product/${params.id}`)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          label="Update"
+          onClick={() => handleEdit(params.id)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          label="Delete"
+          onClick={() => handleDelete(params.id)}
+          showInMenu
+        />,
+      ],
     },
   ];
 
+  const rows: any = [];
+
+  products &&
+    products.forEach((item: any) => {
+      rows.push({
+        id: item._id,
+        name: item.name,
+        price: currencyConverter(item.discountPrice),
+        Stock: item.stock,
+        sold: item?.sold_out,
+      });
+    });
+
+  const handleEdit = (id: string) => {
+    edit(id);
+  };
+
+  const handleDelete = (id: string) => {
+    deleteProduct(id);
+  };
+
+  const handleChangePage = async (e: any, page: any) => {
+    handlePagination(page);
+  };
+
   return (
-    <DataGrid
-      columns={columns}
-      rows={rows}
-      pageSizeOptions={[10, 25, 100]}
-      disableRowSelectionOnClick
-      autoHeight
-    />
+    <>
+      <div className="mt-4 bg-white rounded-md shadow-sm w-full h-full">
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          pageSizeOptions={[10, 25, 100]}
+          disableRowSelectionOnClick
+          autoHeight
+          hideFooter
+        />
+      </div>
+      <CustomPagination data={data} handleChangePage={handleChangePage} />
+    </>
   );
 }
 

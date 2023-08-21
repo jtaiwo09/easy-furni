@@ -5,6 +5,34 @@ import ProductReview from "@/components/ProductReview";
 import { getAProductApi, getShopProducts } from "@/services/product";
 import { notFound } from "next/navigation";
 import React from "react";
+import { Metadata, ResolvingMetadata } from "next";
+
+type Props = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  const id = params.id;
+
+  // fetch data
+  const product = await getAProductApi(id);
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    title: product?.name,
+    description: product?.description,
+    openGraph: {
+      images: [product?.images[0]?.url, ...previousImages],
+    },
+  };
+}
 
 export default async function page({ params: { id } }: any) {
   const productId = id;
@@ -34,8 +62,8 @@ export default async function page({ params: { id } }: any) {
   return (
     <div className="pt-[70px]">
       <CustomBreadCrumb />
-      <div className="flex flex-col lg:flex-row gap-5 container px-[30px] lg:px-0">
-        <div className="w-full lg:w-[40%] p-8  bg-[#f4f4f4] relative h-fit">
+      <div className="flex flex-col lg:flex-row gap-5 container px-5 sm:px-[30px] lg:px-0">
+        <div className="lg:w-[40%] sm:px-5  bg-[#f4f4f4] relative h-fit">
           <ProductDetailItem data={data.images} />
         </div>
         <ProductDetailInfo data={data} averageRating={averageRating} />

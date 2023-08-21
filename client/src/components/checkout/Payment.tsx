@@ -1,18 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import TextField from "../form/TextField";
 import { useForm } from "react-hook-form";
 import { useAppSelector } from "@/redux/hook";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import CountrySelect from "../form/CountrySelect";
-import StateSelect from "../form/SateSelect";
 import { toast } from "react-toastify";
-import CustomButton from "../form/CustomButton";
-import Coupon from "./Coupon";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import PaymentInfo from "./PaymentInfo";
 import { baseUrl } from "@/server";
+import CartSummary from "./CartSummary";
 
 export interface CheckoutFormData {
   name: string;
@@ -38,26 +34,17 @@ const schema = yup.object().shape({
   state: yup.string().required("State is required"),
 });
 
-interface IOrder {
-  cart: any;
-  shippingAddress: any;
-  user: any;
-  totalPrice: any;
-  paymentInfo: {
-    id?: string;
-    type?: string;
-    status?: string;
-  } | null;
-}
-
 function Payment() {
   const { user } = useAppSelector((state) => state.user);
   const { cart } = useAppSelector((state) => state.cart);
-  const [couponCodeData, setCouponCodeData] = useState(null);
-  const [discountPrice, setDiscountPrice] = useState(null);
-  const [orderData, setOrderData] = useState<Order | null>(null);
-  const [loading, setloading] = useState(false);
+  const [orderData, setOrderData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const orderData = JSON.parse(localStorage.getItem("latestOrder") ?? "");
+    setOrderData(orderData);
+  }, []);
 
   const {
     register,
@@ -87,43 +74,16 @@ function Payment() {
     resolver: yupResolver(schema),
   });
 
-  useEffect(() => {
-    const orderData = JSON.parse(localStorage.getItem("latestOrder") ?? "");
-    setOrderData(orderData);
-  }, []);
-
-  const order: IOrder = {
+  const order: any = {
     cart: orderData?.cart,
     shippingAddress: orderData?.shippingAddress,
-    user: user && user,
+    user,
     totalPrice: orderData?.totalPrice,
+    shipping: orderData?.shipping,
     paymentInfo: null,
   };
 
-  const subTotalPrice = cart.reduce(
-    (acc, item) => acc + item.qty * item.discountPrice,
-    0
-  );
-
-  // this is shipping cost variable
-  const shipping = subTotalPrice * 0.1;
-
-  // Discount percentage
-  const discountPercentenge: any = couponCodeData ? discountPrice : "";
-
-  // Total price
-  const totalPrice = couponCodeData
-    ? (subTotalPrice + shipping - discountPercentenge).toFixed(2)
-    : parseFloat((subTotalPrice + shipping).toFixed(2));
-
-  const cashOnDeliveryHandler = async (e: any) => {
-    e.preventDefault();
-    setloading(true);
-
-    order.paymentInfo = {
-      type: "Cash On Delivery",
-    };
-
+  const createOrder = async () => {
     const res = await fetch(`${baseUrl}/order/create-order`, {
       method: "POST",
       headers: {
@@ -131,29 +91,59 @@ function Payment() {
       },
       body: JSON.stringify(order),
     });
-    setloading(false);
-
+    const result = await res.json();
+    setLoading(false);
     if (res.ok) {
       router.push("/order/success");
       toast.success("Order successful!");
       localStorage.setItem("cartItems", JSON.stringify([]));
       localStorage.setItem("latestOrder", JSON.stringify([]));
-      // window.location.reload();
     } else {
-      toast.error("something went wrong, try again");
+      toast.error(result.message);
     }
   };
+
+  const cashOnDeliveryHandler = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+
+    order.paymentInfo = {
+      type: "Cash On Delivery",
+      paid: false,
+    };
+
+    await createOrder();
+  };
+
+  const paystackPaymentHandler = (res: any) => {
+    if (res.status === "success") {
+      order.paymentInfo = {
+        id: res.trans,
+        ref: res.trxref,
+        status: res.status,
+        type: "Paystack",
+        paid: true,
+      };
+      createOrder();
+    }
+  };
+
+  if (cart.length === 0) {
+    redirect("/");
+  }
+
   return (
     <div className="flex gap-5 my-10 flex-col lg:flex-row">
       <div className="flex-1">
         <PaymentInfo
           loading={loading}
-          user={user}
+          order={order}
+          paystackPaymentHandler={paystackPaymentHandler}
           cashOnDeliveryHandler={cashOnDeliveryHandler}
         />
       </div>
       <div className="hidden lg:block w-full lg:w-[30%]">
-        <Coupon />
+        <CartSummary orderData={orderData} />
       </div>
     </div>
   );

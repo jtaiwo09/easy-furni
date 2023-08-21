@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import React from "react";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -49,6 +49,7 @@ function CouponTable({ rows }: any) {
       pageSizeOptions={[10, 25, 100]}
       disableRowSelectionOnClick
       autoHeight
+      hideFooter
     />
   );
 }

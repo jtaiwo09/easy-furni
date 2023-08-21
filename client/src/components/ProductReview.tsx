@@ -8,6 +8,7 @@ import CustomTabPanel from "./CustomTabPanel";
 import Link from "next/link";
 import CustomButton from "./form/CustomButton";
 import { formatDate } from "@/utils/helperFunc";
+import Image from "next/image";
 
 function a11yProps(index: number) {
   return {
@@ -74,9 +75,11 @@ function ProductReview({
             <>
               {data.reviews.map((review) => (
                 <div key={review._id} className="flex gap-3 mb-5">
-                  <img
+                  <Image
                     src={review.user.avatar.url}
                     alt=""
+                    width={45}
+                    height={45}
                     className="w-[45px] h-[45px] rounded-full object-cover"
                   />
                   <div className="">
@@ -85,6 +88,7 @@ function ProductReview({
                       <Rating
                         name="read-only"
                         value={review.rating}
+                        precision={0.5}
                         readOnly
                         size="medium"
                         className="ml-4"
@@ -130,7 +134,9 @@ function ProductReview({
                 <span className="font-semibold">Total Reviews:</span>{" "}
                 {totalReviewsLength}
               </p>
-              <CustomButton text="Visit Shop" />
+              <Link href={`/shop/${data.shopId}`}>
+                <CustomButton text="Visit Shop" />
+              </Link>
             </div>
           </div>
         </CustomTabPanel>

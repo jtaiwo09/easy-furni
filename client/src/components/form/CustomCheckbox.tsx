@@ -1,4 +1,4 @@
-import { FormHelperText } from "@mui/material";
+import FormHelperText from "@mui/material/FormHelperText";
 import React from "react";
 
 interface IProps {

@@ -1,4 +1,4 @@
-import { FormHelperText } from "@mui/material";
+import FormHelperText from "@mui/material/FormHelperText";
 import React from "react";
 import CurrencyInput from "react-currency-input-field";
 import { Controller } from "react-hook-form";

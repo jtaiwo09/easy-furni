@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+    blocked: {
+      type: Boolean,
+      default: false,
+    },
     avatar: {
       public_id: {
         type: String,

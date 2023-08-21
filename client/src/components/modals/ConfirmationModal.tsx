@@ -1,7 +1,6 @@
 import React from "react";
 import CustomModal from "../CustomModal";
 import CustomButton from "../form/CustomButton";
-import { BiLoader } from "react-icons/bi";
 
 interface IProps {
   title: string;

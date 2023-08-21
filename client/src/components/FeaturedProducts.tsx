@@ -13,6 +13,20 @@ function FeaturedProducts({ products }: any) {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 6000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: data?.length >= 2 ? 2 : 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   useEffect(() => {
@@ -31,7 +45,7 @@ function FeaturedProducts({ products }: any) {
       <h1 className="text-[24px] mb-5 font-bold leading-[30px] tracking-[1px] text-primary text-center">
         Featured Products
       </h1>
-      <div className="px-[40px] py-5 w-full">
+      <div className="sm:px-[40px] py-5 w-full">
         {data.length > 0 ? (
           <Slider {...settings} className="">
             {data &&

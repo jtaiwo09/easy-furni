@@ -2,12 +2,23 @@
 import React, { useState } from "react";
 import { BsCartPlus, BsChevronDown, BsChevronUp } from "react-icons/bs";
 import CustomButton from "./form/CustomButton";
+import { toast } from "react-toastify";
+import { useAppDispatch } from "@/redux/hook";
+import { addToCart } from "@/redux/slices/cartSlice";
 
-function QtyButton() {
+function QtyButton({ data, itemInCart }: any) {
+  const dispatch = useAppDispatch();
   const [qty, setQty] = useState<any | number | string>(1);
   const handleQuantity = (str: string) => {
-    if (str === "inc") setQty((prev: any) => Number(prev) + 1);
-    else {
+    if (str === "inc") {
+      if (data.stock < 1) {
+        toast.error("Product is out of stock");
+      } else if (qty >= data.stock) {
+        toast.error(`Only ${qty} product(s) is left`);
+      } else {
+        setQty((prev: any) => Number(prev) + 1);
+      }
+    } else {
       if (qty > 1) {
         setQty((prev: any) => Number(prev) - 1);
       }
@@ -20,6 +31,19 @@ function QtyButton() {
       setQty(value);
     } else {
       setQty("");
+    }
+  };
+  const handleCart = () => {
+    if (data.stock < 1) {
+      toast.error("Product out of stock");
+    } else {
+      const updateCartData = { ...data, qty: qty };
+      dispatch(addToCart(updateCartData));
+      if (itemInCart()) {
+        toast.success("Item has been updated");
+      } else {
+        toast.success("Item added to cart");
+      }
     }
   };
   return (
@@ -48,7 +72,11 @@ function QtyButton() {
           </button>
         </div>
       </div>
-      <CustomButton text="Add to cart" extraClass="w-full sm:w-fit">
+      <CustomButton
+        handleClick={handleCart}
+        text="Add to cart"
+        extraClass="w-full sm:w-fit"
+      >
         <BsCartPlus className="ml-2 text-lg" />
       </CustomButton>
     </div>

@@ -9,35 +9,6 @@ function Categories({ products }: any) {
   const [cat, setCat] = useState(1);
   const [filteredData, setFilteredData] = useState<any>(null);
   const [numOfSlides, setnumOfSlides] = useState(4);
-  // const settings = {
-  //   dots: false,
-  //   infinite: true,
-  //   autoplay: true,
-  //   speed: 1500,
-  //   // autoplaySpeed: 5000,
-  //   slidesToShow: 4,
-  //   slidesToScroll: 1,
-  //   // responsive: [
-  //   //   {
-  //   //     breakpoint: 1024,
-  //   //     settings: {
-  //   //       slidesToShow: 3,
-  //   //     },
-  //   //   },
-  //   //   {
-  //   //     breakpoint: 600,
-  //   //     settings: {
-  //   //       slidesToShow: 2,
-  //   //     },
-  //   //   },
-  //   //   {
-  //   //     breakpoint: 480,
-  //   //     settings: {
-  //   //       slidesToShow: 1,
-  //   //     },
-  //   //   },
-  //   // ],
-  // };
 
   const settings = {
     infinite: true,
@@ -45,6 +16,20 @@ function Categories({ products }: any) {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 6000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: filteredData?.length >= 2 ? 2 : 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   useEffect(() => {
@@ -93,7 +78,7 @@ function Categories({ products }: any) {
       </h1>
       <div className="flex gap-5 lg:gap-2.5 h-max flex-col-reverse lg:flex-row my-5">
         <div className="lg:max-w-[430px] w-full lg:w-[30%] overflow-scroll max-h-[300px]">
-          <ul className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-y-1 gap-x-5 lg:border border-[rgba(215,215,215,1)]">
+          <ul className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-y-1 gap-x-1 lg:border border-[rgba(215,215,215,1)]">
             {categoriesData &&
               categoriesData.map((item) => {
                 if (productCount(item.title) !== 0) {
@@ -141,7 +126,7 @@ function Categories({ products }: any) {
           })}
         </div>
       </div>
-      <div className="px-[40px] py-5 border border-borderCol w-full">
+      <div className="sm:px-[40px] sm:py-5 sm:border border-borderCol w-full">
         {filteredData ? (
           <Slider {...settings} className="">
             {filteredData &&

@@ -29,9 +29,11 @@ export const wishlistSlice = createSlice({
       } else {
         state.wishlist.push(item);
       }
+      localStorage.setItem("wishlistItems", JSON.stringify(state.wishlist));
     },
     removeFromWishlist: (state, action) => {
       state.wishlist = state.wishlist.filter((i) => i._id !== action.payload);
+      localStorage.setItem("wishlistItems", JSON.stringify(state.wishlist));
     },
   },
 });

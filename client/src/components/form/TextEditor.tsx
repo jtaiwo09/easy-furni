@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { FormHelperText } from "@mui/material";
+import FormHelperText from "@mui/material/FormHelperText";
 import { Controller } from "react-hook-form";
 import WYSIWYGEditor from "./WYSIWYGEditor";
 

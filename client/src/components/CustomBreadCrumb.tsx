@@ -8,7 +8,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
   event.preventDefault();
-  console.info("You clicked a breadcrumb.");
+  //
 }
 
 function CustomBreadCrumb() {
@@ -36,7 +36,7 @@ function CustomBreadCrumb() {
   });
 
   return (
-    <div className="py-5 sm:py-[30px] px-[30px] lg:px-[50px]">
+    <div className="py-5 sm:py-[30px] px-[20px] lg:px-[50px]">
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"

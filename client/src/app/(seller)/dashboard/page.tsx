@@ -6,31 +6,20 @@ import { getSellerApiServer } from "@/services/serverApi/seller";
 import { currencyConverter } from "@/utils/helperFunc";
 import { cookies } from "next/headers";
 import React from "react";
-import { BsBagDash, BsBasket, BsCashCoin } from "react-icons/bs";
+import { BsBagDash, BsCashCoin } from "react-icons/bs";
+import { TfiShoppingCartFull } from "react-icons/tfi";
 
 export default async function page() {
   const shopId = cookies().get("seller_id")?.value as string;
 
-  const orders = await getAllOrdersOfShop(shopId);
+  const resOrders = await getAllOrdersOfShop(shopId, 1, 5);
   const productApi = await getShopProducts(shopId);
   const products = productApi.products;
   const res: any = await getSellerApiServer();
   const seller = res.seller;
-  const availableBalance = seller?.availableBalance.toFixed(2);
+  const orders = resOrders.orders;
+  const availableBalance = seller?.availableBalance;
 
-  const rows: any = [];
-  orders &&
-    orders.forEach((item: any) => {
-      rows.push({
-        id: item._id,
-        itemsQty: item.cart.reduce(
-          (acc: number, item: any) => acc + item.qty,
-          0
-        ),
-        total: currencyConverter(item.totalPrice),
-        status: item.status,
-      });
-    });
   return (
     <div className="">
       <h2 className="text-2xl font-medium">Overview</h2>
@@ -43,9 +32,9 @@ export default async function page() {
           linkText="Withdrawal Money"
         />
         <DashboardCard
-          icon={{ label: BsBasket }}
+          icon={{ label: TfiShoppingCartFull }}
           text="All Orders"
-          value={orders.length}
+          value={resOrders.totalRecord}
           link="/dashboard/orders"
           linkText="View Orders"
         />
@@ -59,9 +48,7 @@ export default async function page() {
       </div>
       <div className="mt-8">
         <h2 className="text-2xl font-medium">Latest Orders</h2>
-        <div className="mt-4 bg-white rounded-md shadow-sm w-full h-full">
-          <OrderTable rows={rows} />
-        </div>
+        <OrderTable data={resOrders} shopId={shopId} />
       </div>
     </div>
   );

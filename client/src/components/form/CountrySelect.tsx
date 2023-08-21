@@ -1,4 +1,4 @@
-import { FormHelperText } from "@mui/material";
+import FormHelperText from "@mui/material/FormHelperText";
 import { Country } from "country-state-city";
 
 interface IProps {
