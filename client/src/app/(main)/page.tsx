@@ -1,8 +1,8 @@
 import BestDeals from "@/components/BestDeals";
-import Carousel from "@/components/Carousel/Carousel";
 import HeroCarousel from "@/components/Carousel/HeroCarousel";
 import Categories from "@/components/Categories";
 import FeaturedProducts from "@/components/FeaturedProducts";
+import Loader from "@/components/Layout/Loader";
 import NewProducts from "@/components/NewProducts";
 import { getAllProducts } from "@/services/product";
 import { notFound } from "next/navigation";
@@ -13,6 +13,8 @@ export default async function Home() {
     notFound();
   }
   const products = data?.products;
+
+  if (products) return <Loader />;
 
   return (
     <div className="">

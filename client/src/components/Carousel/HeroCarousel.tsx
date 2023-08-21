@@ -4,32 +4,6 @@ import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { MdChevronLeft } from "react-icons/md";
-import CustomButton from "../form/CustomButton";
-
-function SampleNextArrow(props: any) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={`${className} !h-10 !w-10 rounded-full !bg-black !flex !items-center !justify-center`}
-      onClick={onClick}
-    >
-      <MdChevronLeft className="text-4xl !text-white" />
-    </div>
-  );
-}
-
-function SamplePrevArrow(props: any) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={`${className} !h-10 !w-10 rounded-full !bg-black !flex !items-center !justify-center`}
-      onClick={onClick}
-    >
-      <MdChevronLeft className="text-4xl !text-white" />
-    </div>
-  );
-}
 
 function HeroCarousel() {
   const settings = {

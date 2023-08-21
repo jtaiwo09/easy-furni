@@ -35,7 +35,6 @@
     "react-draft-wysiwyg": "^1.15.0",
     "react-hook-form": "^7.45.1",
     "react-icons": "^4.9.0",
-    "react-lottie": "^1.2.3",
     "react-paystack": "^4.0.3",
     "react-redux": "^8.0.5",
     "react-select": "^5.7.4",
@@ -61,7 +60,6 @@
     "@types/draftjs-to-html": "^0.8.1",
     "@types/html-to-draftjs": "^1.4.0",
     "@types/react-draft-wysiwyg": "^1.13.4",
-    "@types/react-lottie": "^1.2.6",
     "@types/react-slick": "^0.23.10",
     "i": "^0.3.7",
     "npm": "^9.8.1"
