@@ -42,7 +42,7 @@ function CartDrawer({ toggleModal, showCart }: IProps) {
         </div>
         <div className="h-[calc(100vh-97px)] px-4 pt-6 pb-4 relative">
           {cart.length > 0 ? (
-            <div className="h-[calc(100vh-252px)] overflow-y-auto">
+            <div className="h-[calc(100vh-236px)] overflow-y-auto">
               {cart.map((product) => (
                 <ProductItem key={product._id} product={product} />
               ))}
@@ -58,7 +58,7 @@ function CartDrawer({ toggleModal, showCart }: IProps) {
             </div>
           )}
           {cart.length > 0 ? (
-            <div className="sticky bottom-0 w-full py-4 bg-white border-t border-borderCol">
+            <div className="sticky bottom-0 w-full pt-4 bg-white border-t border-borderCol">
               <p className="flex justify-between font-semibold mb-3">
                 Subtotal:{" "}
                 <span className="text-primary text-lg">

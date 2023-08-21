@@ -73,7 +73,7 @@ function Categories({ products }: any) {
   };
   return (
     <div className="pb-[60px] px-5">
-      <h1 className="text-[24px] mb-5 font-bold leading-[30px] tracking-[1px] text-primary text-center">
+      <h1 className="text-[24px] mb-5 font-bold leading-[30px] tracking-[1px] text-primary text-center uppercase">
         Categories
       </h1>
       <div className="flex gap-5 lg:gap-2.5 h-max flex-col-reverse lg:flex-row my-5">
@@ -126,7 +126,7 @@ function Categories({ products }: any) {
           })}
         </div>
       </div>
-      <div className="sm:px-[40px] sm:py-5 sm:border border-borderCol w-full">
+      <div className="sm:px-[40px] sm:py-5 w-full">
         {filteredData ? (
           <Slider {...settings} className="">
             {filteredData &&

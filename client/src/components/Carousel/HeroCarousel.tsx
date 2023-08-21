@@ -21,18 +21,18 @@ function HeroCarousel() {
       id: "1",
       url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692616527/hero-sliders/hero1_gajtnd.jpg",
     },
-    // {
-    //   id: "2",
-    //   url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692624160/hero-sliders/hero7_tixq7a.jpg",
-    // },
+    {
+      id: "2",
+      url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692624160/hero-sliders/hero7_tixq7a.jpg",
+    },
     {
       id: "3",
       url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692623376/hero-sliders/hero6_h02d58.jpg",
     },
-    // {
-    //   id: "4",
-    //   url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692622179/hero-sliders/hero3_bww4ew.jpg",
-    // },
+    {
+      id: "4",
+      url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692622179/hero-sliders/hero3_bww4ew.jpg",
+    },
     {
       id: "5",
       url: "https://res.cloudinary.com/citi-tasker/image/upload/v1692622716/hero-sliders/hero4_oqko6s.jpg",
@@ -47,10 +47,10 @@ function HeroCarousel() {
     },
   ];
   return (
-    <div className="relative w-full h-[70vh] sm:h-screen">
+    <div className="relative w-full h-[60vh] sm:h-screen pt-[70px]">
       <Slider {...settings}>
         {images.map((el) => (
-          <div className="relative h-[70vh]  sm:h-[calc(100vh-40px)]">
+          <div className="relative h-[calc(60vh-70px)]  sm:h-[calc(100vh-110px)]">
             <Image
               key={el.id}
               src={el.url}

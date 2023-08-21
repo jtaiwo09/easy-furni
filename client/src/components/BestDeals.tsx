@@ -54,7 +54,7 @@ function BestDeals({ products }: any) {
 
   return (
     <div className="pb-[60px] px-5">
-      <h1 className="text-[24px] mb-5 font-bold leading-[30px] tracking-[1px] text-primary text-center">
+      <h1 className="text-[24px] mb-5 font-bold leading-[30px] tracking-[1px] text-primary text-center uppercase">
         Best Deals
       </h1>
       <div className="sm:px-[40px] py-5 w-full">

@@ -107,8 +107,8 @@ function Product({ data }: { data: Product }) {
   };
 
   return (
-    <div className="relative pr-2 mb-5">
-      <div className="overflow-hidden group/icons bg-[#F4F4F4] p-5 h-[280px] relative">
+    <div className="relative !mr-3 last:mr-0 mb-5 border border-[#ddd] border-solid rounded-md">
+      <div className="overflow-hidden group/icons bg-[#F4F4F4] p-5 h-[200px] relative">
         <span className="inline-block text-center text-sm w-14 py-0.5 text-white bg-[#9E0A0F] absolute top-2 right-2 z-[2]">
           {perDiscount()}
         </span>
@@ -117,7 +117,7 @@ function Product({ data }: { data: Product }) {
             src={data.images[0].url}
             alt=""
             fill
-            className="h-full w-full object-contain mix-blend-darken hover:scale-[1.2] transition-transform duration-500"
+            className="h-full w-full p-3 object-contain mix-blend-darken hover:scale-[1.1] transition-transform duration-500"
           />
         </Link>
         <div className="hidden lg:block absolute bottom-0 right-2 duration-[.3s] translate-y-[100%] group-hover/icons:translate-y-0">
@@ -170,7 +170,7 @@ function Product({ data }: { data: Product }) {
           </div>
         </div>
       </div>
-      <div className="px-4 mt-[22px] text-primary group hover:!text-text-hover">
+      <div className="px-4 pb-4 mt-[22px] text-primary group hover:!text-text-hover">
         <Link
           href={`/shop/${data.shopId}`}
           className="inline-block mb-1 font-medium text-white text-xs bg-blue-600 rounded-md py-1 px-2"
