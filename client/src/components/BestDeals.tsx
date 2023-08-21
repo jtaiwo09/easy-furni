@@ -15,7 +15,7 @@ function BestDeals({ products }: any) {
       .slice(0, 5);
     setData(best_deals);
 
-    if (best_deals.length > 4) {
+    if (best_deals && best_deals?.length > 4) {
       setnumOfSlides(4);
     } else if (best_deals.length <= 4 && best_deals.length > 2) {
       setnumOfSlides(3);
@@ -60,7 +60,8 @@ function BestDeals({ products }: any) {
       <div className="sm:px-[40px] py-5 w-full">
         {data ? (
           <Slider {...settings} className="">
-            {data.length &&
+            {data &&
+              data?.length &&
               data.map((item: any) => (
                 <div className="" key={item._id}>
                   <Product data={item} />

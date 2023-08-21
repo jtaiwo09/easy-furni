@@ -93,7 +93,7 @@ function NewProducts() {
               </div>
             ) : (
               <>
-                {filterByCategory.length > 0 ? (
+                {filterByCategory?.length > 0 ? (
                   <Box className="grid grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] px-5 col-gap">
                     {filterByCategory.map((product: any) => (
                       <Product key={product._id} data={product} />

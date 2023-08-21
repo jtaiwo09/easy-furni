@@ -31,7 +31,7 @@ function FeaturedProducts({ products }: any) {
 
   useEffect(() => {
     setData(products.slice(0, 8));
-    if (data.length > 4) {
+    if (data && data.length > 4) {
       setnumOfSlides(4);
     } else if (data.length <= 4 && data.length > 2) {
       setnumOfSlides(3);
@@ -46,7 +46,7 @@ function FeaturedProducts({ products }: any) {
         Featured Products
       </h1>
       <div className="sm:px-[40px] py-5 w-full">
-        {data.length > 0 ? (
+        {data && data?.length > 0 ? (
           <Slider {...settings} className="">
             {data &&
               data.map((item: any) => (

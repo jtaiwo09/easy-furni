@@ -35,7 +35,7 @@ function Categories({ products }: any) {
   useEffect(() => {
     setFilteredData(products.slice(0, 8));
 
-    if (products.length > 4) {
+    if (products && products?.length > 4) {
       setnumOfSlides(4);
     } else if (products.length <= 4 && products.length > 2) {
       setnumOfSlides(3);
@@ -54,7 +54,7 @@ function Categories({ products }: any) {
         )
       : [];
 
-    if (data.length > 4) {
+    if (data && data?.length > 4) {
       setnumOfSlides(4);
     } else if (data.length <= 4 && data.length > 2) {
       setnumOfSlides(3);
@@ -68,7 +68,7 @@ function Categories({ products }: any) {
   };
   const productCount = (title: string) => {
     return products
-      ? products.filter((el: any) => el.category === title).length
+      ? products.filter((el: any) => el.category === title)?.length
       : 0;
   };
   return (
