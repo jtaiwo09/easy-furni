@@ -9,6 +9,7 @@ const sendToken = (user, statusCode, res) => {
     sameSite: "none",
     secure: true,
     path: "/",
+    domain: process.env.BASE_URL,
   };
 
   res.status(statusCode).cookie("token", token, options).json({
