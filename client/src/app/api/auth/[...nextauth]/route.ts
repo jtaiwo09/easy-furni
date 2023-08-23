@@ -14,7 +14,6 @@ export const authOptions: NextAuthOptions = {
         const res: any = await loginUser(credentials);
         const user = await res.json();
         if (res.ok && user) {
-          console.log("TEEEEE", user.token);
           cookies().set("token", user.token, {
             secure: true,
             httpOnly: true,
@@ -36,9 +35,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      console.log("url", url);
-      console.log("baseUrl", baseUrl);
-
       return url.startsWith(baseUrl) ? url : baseUrl + "/";
     },
   },
