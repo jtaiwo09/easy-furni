@@ -27,7 +27,7 @@ export default async function RootLayout({
 
   console.log("USER TOKEN", token);
 
-  const data = await getServerSession(authOptions);
+  // const data = await getServerSession(authOptions);
 
   return (
     <html lang="en">
@@ -35,7 +35,7 @@ export default async function RootLayout({
         <Provider>
           <CustomThemeProvider>
             <div className="flex flex-col min-h-screen">
-              <Navbar token={data} sellerToken={sellerToken} />
+              <Navbar sellerToken={sellerToken} />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
             </div>

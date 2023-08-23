@@ -26,15 +26,10 @@ import { useRouter } from "next/navigation";
 import { getUser, logout } from "@/redux/slices/userSlice";
 import { getSeller } from "@/redux/slices/sellerSlice";
 import Image from "next/image";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import Loader from "./Loader";
 
-function Navbar({
-  sellerToken,
-  token,
-}: {
-  sellerToken: string | null;
-  token: string | any;
-}) {
+function Navbar({ sellerToken }: { sellerToken: string | null }) {
   const { isAuthenticated, user } = useAppSelector((state) => state.user);
   const [showNav, setShowNav] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,15 +43,18 @@ function Navbar({
   const dispatch = useAppDispatch();
   const { cart } = useAppSelector((state) => state.cart);
   const { wishlist } = useAppSelector((state) => state.wishlist);
+  const { data: session, status } = useSession();
+
+  if (!session) return <Loader />;
 
   useEffect(() => {
-    if (token) {
+    if (session) {
       dispatch(getUser());
     }
     if (sellerToken) {
       dispatch(getSeller());
     }
-  }, [token, sellerToken]);
+  }, [session, sellerToken]);
 
   useEffect(() => {
     window.addEventListener("scroll", function () {
@@ -454,7 +452,7 @@ function Navbar({
           </li>
 
           <li className="w-fit" onClick={closeMobileNav}>
-            {token ? (
+            {session ? (
               <button
                 className="bg-red-500 min-w-[100px] py-2 rounded-md text-white text-center text-sm font-medium"
                 onClick={handleLogout}
