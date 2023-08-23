@@ -26,14 +26,14 @@ export default async function RootLayout({
   const sellerToken = cookies().get("seller_token")?.value ?? null;
 
   console.log("USER TOKEN", token);
-  const session = await getServerSession(authOptions);
+  const data = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <Provider session={session}>
+        <Provider>
           <CustomThemeProvider>
             <div className="flex flex-col min-h-screen">
-              <Navbar sellerToken={sellerToken} />
+              <Navbar token={data} sellerToken={sellerToken} />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
             </div>
