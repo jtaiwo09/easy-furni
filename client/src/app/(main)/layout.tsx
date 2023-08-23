@@ -26,9 +26,7 @@ export default async function RootLayout({
   const sellerToken = cookies().get("seller_token")?.value ?? null;
 
   console.log("USER TOKEN", token);
-
   const session = await getServerSession(authOptions);
-
   return (
     <html lang="en">
       <body className={montserrat.className}>
