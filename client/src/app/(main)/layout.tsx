@@ -7,8 +7,8 @@ import { cookies } from "next/headers";
 import { Suspense } from "react";
 import Loading from "./loading";
 import Provider from "@/components/providers/Provider";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth/next";
+// import { authOptions } from "../api/auth/[...nextauth]/route";
+// import { getServerSession } from "next-auth/next";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
