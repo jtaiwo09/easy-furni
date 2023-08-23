@@ -3,13 +3,13 @@ import CustomButton from "@/components/form/CustomButton";
 import TextField from "@/components/form/TextField";
 import Stack from "@mui/material/Stack";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 import CustomForm from "@/components/form/CustomForm";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useAppSelector } from "@/redux/hook";
+import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { login } from "@/redux/slices/userSlice";
 
 const schema = yup.object().shape({
   email: yup
@@ -26,8 +26,8 @@ export type LoginFormData = {
 
 function page() {
   const router = useRouter();
-  const { isAuthenticated, loading } = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.user);
+  const [loader, setLoader] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -42,14 +42,22 @@ function page() {
   }, [isAuthenticated]);
 
   const onSubmit = async (data: any, reset: any) => {
-    dispatch(login(data))
-      .unwrap()
-      .then(() => {
-        toast.success("Login success");
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+    setLoader(true);
+    const res = await signIn("credentials", { ...data, callbackUrl: "/" });
+    setLoader(false);
+    if (res?.ok) {
+      toast.success("Login successful");
+    } else {
+      toast.error(res?.error);
+    }
+    // dispatch(login(data))
+    //   .unwrap()
+    //   .then(() => {
+    //     toast.success("Login success");
+    //   })
+    //   .catch((err) => {
+    //     toast.error(err.message);
+    //   });
   };
 
   return (
@@ -98,7 +106,7 @@ function page() {
             extraClass="uppercase py-2.5 my-5 w-full"
             text="Log In"
             type="submit"
-            loading={loading}
+            loading={loader}
           />
           <p className="mt-2.5 text-sm">
             Don't have an account?{" "}

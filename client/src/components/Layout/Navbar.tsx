@@ -26,13 +26,14 @@ import { useRouter } from "next/navigation";
 import { getUser, logout } from "@/redux/slices/userSlice";
 import { getSeller } from "@/redux/slices/sellerSlice";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 function Navbar({
   sellerToken,
   token,
 }: {
   sellerToken: string | null;
-  token: string | null;
+  token: string | any;
 }) {
   const { isAuthenticated, user } = useAppSelector((state) => state.user);
   const [showNav, setShowNav] = useState(false);
@@ -55,6 +56,7 @@ function Navbar({
     if (sellerToken) {
       dispatch(getSeller());
     }
+    console.log("Navbar", token);
   }, [token, sellerToken]);
 
   useEffect(() => {
@@ -82,6 +84,7 @@ function Navbar({
   };
 
   const handleLogout = async () => {
+    await signOut();
     dispatch(logout())
       .unwrap()
       .then((res) => {
@@ -352,7 +355,7 @@ function Navbar({
                     Logout
                   </MenuItem>
                 ) : (
-                  <MenuItem component={Link} href="/login">
+                  <MenuItem component={Link} href="/api/auth/signin">
                     <ListItemIcon>
                       <LoginIcon fontSize="small" />
                     </ListItemIcon>
@@ -461,7 +464,7 @@ function Navbar({
               </button>
             ) : (
               <Link
-                href="/login"
+                href="/api/auth/signin"
                 className="font-medium text-sm min-w-[100px] bg-text-hover inline-block py-2 text-white rounded-md text-center"
               >
                 Login
