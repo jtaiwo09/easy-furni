@@ -45,7 +45,7 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
   const { wishlist } = useAppSelector((state) => state.wishlist);
   const { data: session, status } = useSession();
 
-  if (!session) return <Loader />;
+  console.log(session, status);
 
   useEffect(() => {
     if (session) {
@@ -115,6 +115,8 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
   const closeMobileNav = () => {
     setToggleNavDropdown(false);
   };
+
+  if (status === "loading") return <Loader />;
 
   return (
     <div
