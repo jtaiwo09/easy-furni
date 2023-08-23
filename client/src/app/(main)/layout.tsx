@@ -27,6 +27,7 @@ export default async function RootLayout({
 
   console.log("USER TOKEN", token);
   const data = await getServerSession(authOptions);
+  console.log("Session TOKEN", data);
   return (
     <html lang="en">
       <body className={montserrat.className}>
