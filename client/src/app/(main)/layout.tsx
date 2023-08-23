@@ -7,8 +7,8 @@ import { cookies } from "next/headers";
 import { Suspense } from "react";
 import Loading from "./loading";
 import Provider from "@/components/providers/Provider";
-// import { authOptions } from "../api/auth/[...nextauth]/route";
-// import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -27,12 +27,12 @@ export default async function RootLayout({
 
   console.log("USER TOKEN", token);
 
-  // const data = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <Provider>
+        <Provider session={session}>
           <CustomThemeProvider>
             <div className="flex flex-col min-h-screen">
               <Navbar sellerToken={sellerToken} />
