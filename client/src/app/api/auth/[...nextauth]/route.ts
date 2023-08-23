@@ -18,6 +18,8 @@ export const authOptions: NextAuthOptions = {
             secure: true,
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 7 * 1000,
+            path: "/",
+            domain: ".vercel.app",
           });
           return user.user;
         }
