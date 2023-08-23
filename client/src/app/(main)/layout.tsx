@@ -34,7 +34,7 @@ export default async function RootLayout({
         <Provider>
           <CustomThemeProvider>
             <div className="flex flex-col min-h-screen">
-              <Navbar token={data} sellerToken={sellerToken} />
+              <Navbar token={token} sellerToken={sellerToken} />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
             </div>
