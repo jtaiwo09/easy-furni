@@ -17,9 +17,9 @@ export const authOptions: NextAuthOptions = {
           cookies().set("token", user.token, {
             secure: true,
             httpOnly: true,
-            maxAge: 60 * 60 * 24 * 7 * 1000,
+            maxAge: 60 * 60 * 24 * 7,
             path: "/",
-            domain: ".vercel.app",
+            // domain: ".jtk-store.vercel.app",
           });
           return user.user;
         }

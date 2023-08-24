@@ -56,7 +56,7 @@ function Navbar({
     if (sellerToken) {
       dispatch(getSeller());
     }
-    console.log("Navbar", token, user);
+    console.log("Navbarsss", token, user);
   }, [token, sellerToken]);
 
   useEffect(() => {
