@@ -1,6 +1,5 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { logout } from "@/redux/slices/userSlice";
 import { formatDate } from "@/utils/helperFunc";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,17 +38,17 @@ function ShopInfo({ data: { shop }, products, id }: IProp) {
   const isOwner = seller && seller._id === id;
 
   const handleLogout = () => {
-    dispatch(logout())
-      .unwrap()
-      .then((res) => {
-        if (res?.success) {
-          toast.success(res.message);
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+    // dispatch(logout())
+    //   .unwrap()
+    //   .then((res) => {
+    //     if (res?.success) {
+    //       toast.success(res.message);
+    //       router.push("/");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     toast.error(error.message);
+    //   });
   };
 
   return (
