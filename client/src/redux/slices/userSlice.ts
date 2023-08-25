@@ -2,7 +2,7 @@ import { LoginFormData } from "@/app/(auth)/login/page";
 import { AddressFormData } from "@/app/(main)/(dashboard)/address/page";
 import { ChangePasswordFormData } from "@/app/(main)/(dashboard)/change-password/page";
 import { ProfileFormData } from "@/app/(main)/(dashboard)/profile/page";
-import { loginUser, logoutUser } from "@/services/auth";
+import { loginUser } from "@/services/auth";
 import {
   deleteUserAddressApi,
   editUserAddressApi,
@@ -38,14 +38,6 @@ export const login = createAsyncThunk(
     return await response.json();
   }
 );
-
-export const logout = createAsyncThunk("user/logout", async (_, thunkApi) => {
-  const response = (await logoutUser()) as any;
-  if (!response.ok) {
-    return thunkApi.rejectWithValue(await response.json());
-  }
-  return await response.json();
-});
 
 export const getUser = createAsyncThunk(
   "user/get-user",
@@ -140,19 +132,6 @@ export const userSlice = createSlice({
         state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(logout.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(logout.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
-        state.user = null;
-        state.isAuthenticated = false;
-      })
-      .addCase(logout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

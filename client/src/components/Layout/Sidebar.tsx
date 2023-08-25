@@ -11,11 +11,11 @@ import { RiAdminLine } from "react-icons/ri";
 import { FaRegAddressBook } from "react-icons/fa";
 import { AiOutlineLogin } from "react-icons/ai";
 import { usePathname } from "next/navigation";
-import { toast } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { logout } from "@/redux/slices/userSlice";
+import { useAppSelector } from "@/redux/hook";
 import { HiOutlineReceiptRefund } from "react-icons/hi";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
+import Cookies from "universal-cookie";
 
 interface IProp {
   extraClass?: string;
@@ -24,21 +24,12 @@ function Sidebar({ extraClass }: IProp) {
   const [open, setOpen] = useState(true);
   const { user } = useAppSelector((state) => state.user);
 
-  const dispatch = useAppDispatch();
   const pathname = usePathname();
 
   const handleLogout = async () => {
-    dispatch(logout())
-      .unwrap()
-      .then((res) => {
-        if (res?.success) {
-          toast.success(res.message);
-          window.location.href = "/";
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+    const cookies = new Cookies();
+    cookies.remove("token", { path: "/" });
+    await signOut({ callbackUrl: "/" });
   };
   const currentPath = useCallback(
     (path: string) => {

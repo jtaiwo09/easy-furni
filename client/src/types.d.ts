@@ -66,6 +66,7 @@ interface User {
   phoneNumber: string;
   createdAt: Date;
   updatedAt: Date;
+  userToken?: string;
 }
 
 interface Shop {

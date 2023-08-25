@@ -22,19 +22,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = cookies().get("token")?.value ?? null;
   const sellerToken = cookies().get("seller_token")?.value ?? null;
-
-  console.log("USER TOKEN", token);
-  const data = await getServerSession(authOptions);
-  console.log("Session TOKEN", data);
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body className={montserrat.className}>
         <Provider>
           <CustomThemeProvider>
             <div className="flex flex-col min-h-screen">
-              <Navbar token={token} sellerToken={sellerToken} />
+              <Navbar token={session} sellerToken={sellerToken} />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
             </div>

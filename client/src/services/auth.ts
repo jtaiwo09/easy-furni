@@ -32,17 +32,6 @@ const loginUser = async (data: any) => {
   }
 };
 
-const logoutUser = async () => {
-  try {
-    const res = await fetch(`${baseUrl}/user/logout`, {
-      credentials: "include",
-    });
-    return res;
-  } catch (error) {
-    return error;
-  }
-};
-
 // Signup Seller
 const signupSeller = async (data: any) => {
   try {
@@ -87,11 +76,4 @@ const logoutSeller = async () => {
   }
 };
 
-export {
-  signup,
-  loginUser,
-  logoutUser,
-  signupSeller,
-  loginSeller,
-  logoutSeller,
-};
+export { signup, loginUser, signupSeller, loginSeller, logoutSeller };

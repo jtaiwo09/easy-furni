@@ -19,8 +19,6 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = cookies().get("token")?.value ?? null;
-  // if (token) redirect("/");
   return (
     <html lang="en">
       <body className={montserrat.className}>

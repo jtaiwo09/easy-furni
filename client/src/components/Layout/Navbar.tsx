@@ -20,13 +20,13 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import CartDrawer from "../CartDrawer";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { toast } from "react-toastify";
 import WishlistDrawer from "../WishlistDrawer";
 import { useRouter } from "next/navigation";
-import { getUser, logout } from "@/redux/slices/userSlice";
+import { getUser } from "@/redux/slices/userSlice";
 import { getSeller } from "@/redux/slices/sellerSlice";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
+import Cookies from "universal-cookie";
 
 function Navbar({
   sellerToken,
@@ -56,7 +56,6 @@ function Navbar({
     if (sellerToken) {
       dispatch(getSeller());
     }
-    console.log("Navbar", token);
   }, [token, sellerToken]);
 
   useEffect(() => {
@@ -84,18 +83,9 @@ function Navbar({
   };
 
   const handleLogout = async () => {
-    await signOut();
-    dispatch(logout())
-      .unwrap()
-      .then((res) => {
-        if (res?.success) {
-          toast.success(res.message);
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+    const cookies = new Cookies();
+    cookies.remove("token", { path: "/" });
+    await signOut({ callbackUrl: "/" });
   };
 
   const toggleCartModal = () => {

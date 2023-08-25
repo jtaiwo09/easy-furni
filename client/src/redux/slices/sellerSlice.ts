@@ -2,6 +2,7 @@ import { SellerLoginFormData } from "@/app/(auth)/shop/login/page";
 import { loginSeller, logoutSeller } from "@/services/auth";
 import { getSellerApi } from "@/services/seller";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// import Cookies from "universal-cookie";
 
 export interface SellerState {
   loading: boolean;
@@ -63,6 +64,8 @@ export const sellerSlice = createSlice({
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
+        // const cookies = new Cookies();
+        // cookies.set("seller_token", action.payload.token);
         state.loading = false;
         state.error = null;
         state.seller = action.payload.seller;

@@ -10,16 +10,19 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {},
       async authorize(credentials, req) {
-        console.log(credentials);
-        const res: any = await loginUser(credentials);
-        const user = await res.json();
-        if (res.ok && user) {
-          cookies().set("token", user.token, {
-            secure: true,
-            httpOnly: true,
-            maxAge: 60 * 60 * 24 * 7 * 1000,
-          });
-          return user.user;
+        const { email, password } = credentials as any;
+        const res: any = await loginUser({ email, password });
+        const userData: any = await res.json();
+        console.log("ad", userData);
+        if (res.ok && userData) {
+          cookies().set("token", userData.token);
+          const user = {
+            id: userData.user._id,
+            email: userData.user.email,
+            role: userData.user.role,
+            userToken: userData.token,
+          };
+          return user;
         }
         return null;
       },
@@ -37,6 +40,10 @@ export const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : baseUrl + "/";
     },
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60,
   },
   pages: {
     signIn: "/login",
