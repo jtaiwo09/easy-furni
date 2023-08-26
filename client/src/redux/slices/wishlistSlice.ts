@@ -10,9 +10,7 @@ export interface SliceState {
 const initialState: SliceState = {
   loading: false,
   error: null,
-  wishlist: localStorage.getItem("wishlistItems")
-    ? JSON.parse(localStorage.getItem("wishlistItems") ?? "")
-    : [],
+  wishlist: [],
 };
 
 export const wishlistSlice = createSlice({
@@ -29,11 +27,17 @@ export const wishlistSlice = createSlice({
       } else {
         state.wishlist.push(item);
       }
-      localStorage.setItem("wishlistItems", JSON.stringify(state.wishlist));
+      window.localStorage.setItem(
+        "wishlistItems",
+        JSON.stringify(state.wishlist)
+      );
     },
     removeFromWishlist: (state, action) => {
       state.wishlist = state.wishlist.filter((i) => i._id !== action.payload);
-      localStorage.setItem("wishlistItems", JSON.stringify(state.wishlist));
+      window.localStorage.setItem(
+        "wishlistItems",
+        JSON.stringify(state.wishlist)
+      );
     },
   },
 });

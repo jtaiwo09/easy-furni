@@ -10,9 +10,7 @@ export interface CartState {
 const initialState: CartState = {
   loading: false,
   error: null,
-  cart: localStorage.getItem("cartItems")
-    ? JSON.parse(localStorage.getItem("cartItems") ?? "")
-    : [],
+  cart: [],
 };
 
 export const cartSlice = createSlice({
@@ -29,11 +27,11 @@ export const cartSlice = createSlice({
       } else {
         state.cart.push(item);
       }
-      localStorage.setItem("cartItems", JSON.stringify(state.cart));
+      window.localStorage.setItem("cartItems", JSON.stringify(state.cart));
     },
     removeFromCart: (state, action) => {
       state.cart = state.cart.filter((i) => i._id !== action.payload);
-      localStorage.setItem("cartItems", JSON.stringify(state.cart));
+      window.localStorage.setItem("cartItems", JSON.stringify(state.cart));
     },
   },
 });
