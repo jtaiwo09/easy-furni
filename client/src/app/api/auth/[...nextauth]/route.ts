@@ -2,7 +2,6 @@ import { loginUser } from "@/services/auth";
 import type { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { cookies } from "next/headers";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,7 +16,6 @@ export const authOptions: NextAuthOptions = {
         console.log(userData);
         if (!res.ok) throw new Error(userData.message);
         if (res.ok && userData) {
-          cookies().set("token", userData.token);
           const user = {
             id: userData.user._id,
             email: userData.user.email,
@@ -51,5 +49,3 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-
-// export default NextAuth(authOptions);

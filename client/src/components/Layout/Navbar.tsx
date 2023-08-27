@@ -43,7 +43,7 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
   const { cart } = useAppSelector((state) => state.cart);
   const { wishlist } = useAppSelector((state) => state.wishlist);
 
-  const { data: session, status } = useSession();
+  const { data, status } = useSession();
 
   const auth = status === "authenticated";
 
