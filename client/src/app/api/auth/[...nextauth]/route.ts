@@ -8,12 +8,14 @@ export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
+      type: "credentials",
       credentials: {},
       async authorize(credentials, req) {
         const { email, password } = credentials as any;
         const res: any = await loginUser({ email, password });
         const userData: any = await res.json();
-        console.log("ad", userData);
+        console.log(userData);
+        if (!res.ok) throw new Error(userData.message);
         if (res.ok && userData) {
           cookies().set("token", userData.token);
           const user = {
@@ -28,7 +30,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       return { ...token, ...user };
@@ -36,9 +37,6 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token, user }) {
       session.user = token as any;
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl + "/";
     },
   },
   session: {

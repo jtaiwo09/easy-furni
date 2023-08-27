@@ -43,21 +43,17 @@ function page() {
 
   const onSubmit = async (data: any, reset: any) => {
     setLoader(true);
-    const res = await signIn("credentials", { ...data, callbackUrl: "/" });
+    const res = await signIn("credentials", {
+      ...data,
+      redirect: false,
+    });
     setLoader(false);
-    if (res?.ok) {
-      toast.success("Login successful");
-    } else {
+    if (res?.error) {
       toast.error(res?.error);
+    } else {
+      toast.success("Login successful");
+      router.push("/");
     }
-    // dispatch(login(data))
-    //   .unwrap()
-    //   .then(() => {
-    //     toast.success("Login success");
-    //   })
-    //   .catch((err) => {
-    //     toast.error(err.message);
-    //   });
   };
 
   return (

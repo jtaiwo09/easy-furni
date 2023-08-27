@@ -7,8 +7,6 @@ import { cookies } from "next/headers";
 import { Suspense } from "react";
 import Loading from "./loading";
 import Provider from "@/components/providers/Provider";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth/next";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -23,14 +21,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const sellerToken = cookies().get("seller_token")?.value ?? null;
-  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body className={montserrat.className}>
         <Provider>
           <CustomThemeProvider>
             <div className="flex flex-col min-h-screen">
-              <Navbar token={session} sellerToken={sellerToken} />
+              <Navbar sellerToken={sellerToken} />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
             </div>

@@ -18,14 +18,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = cookies().get("token")?.value ?? null;
   const sellerToken = cookies().get("seller_token")?.value ?? null;
   return (
     <html lang="en">
       <body className={montserrat.className}>
         <CustomThemeProvider>
           <Suspense fallback={<Loading />}>
-            <Navbar token={token} sellerToken={sellerToken} />
+            <Navbar sellerToken={sellerToken} />
             {children}
           </Suspense>
         </CustomThemeProvider>
