@@ -13,7 +13,6 @@ export const authOptions: NextAuthOptions = {
         const { email, password } = credentials as any;
         const res: any = await loginUser({ email, password });
         const userData: any = await res.json();
-        console.log(userData);
         if (!res.ok) throw new Error(userData.message);
         if (res.ok && userData) {
           const user = {

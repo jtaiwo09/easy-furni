@@ -1,21 +1,10 @@
-"use client";
-import { baseUrl, userData } from "@/server";
-import Cookies from "universal-cookie";
-
-const cookies = new Cookies();
-
-const token = cookies.get("token");
-
-export const fetchConfig = {
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  },
-};
+import { baseUrl } from "@/server";
 
 const getUserApi = async () => {
   try {
-    const res = await fetch(`${baseUrl}/user/get-user`, fetchConfig);
+    const res = await fetch(`${baseUrl}/user/get-user`, {
+      credentials: "include",
+    });
     return res;
   } catch (error) {
     console.log("There was an error", error);
@@ -27,7 +16,10 @@ const updateUserInformationApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-user-info`, {
       method: "PUT",
-      ...fetchConfig,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
     return res;
@@ -41,7 +33,10 @@ const updateUserPasswordApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-user-password`, {
       method: "PUT",
-      ...fetchConfig,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
     return res;
@@ -55,7 +50,10 @@ const updatUserAddressApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-user-addresses`, {
       method: "PUT",
-      ...fetchConfig,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
     return res;
@@ -69,7 +67,10 @@ const updateDefaultAddressApi = async (data: string) => {
   try {
     const res = await fetch(`${baseUrl}/user/update-default-address/${data}`, {
       method: "PUT",
-      ...fetchConfig,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     return res;
   } catch (error) {
@@ -82,7 +83,10 @@ const editUserAddressApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/user/edit-user-address`, {
       method: "PUT",
-      ...fetchConfig,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
     });
     return res;
@@ -96,7 +100,10 @@ const deleteUserAddressApi = async (data: string) => {
   try {
     const res = await fetch(`${baseUrl}/user/delete-user-address/${data}`, {
       method: "DELETE",
-      ...fetchConfig,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     return res;
   } catch (error) {
