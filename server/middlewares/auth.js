@@ -5,21 +5,14 @@ const catchAsyncErrors = require("./catchAsyncErrors");
 const jwt = require("jsonwebtoken");
 
 exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer ")
-  ) {
-    const token = req.headers.authorization.split("Bearer ")[1];
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-      req.user = await User.findById(decoded.id);
-      next();
-    } else {
-      next(new ErrorHandler("Invalid Token", 400));
-    }
-  } else {
-    next(new ErrorHandler("No Token Found", 400));
+  const { token } = req.cookies;
+  if (!token) {
+    return next(new ErrorHandler("Please login to continue"));
   }
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+  req.user = await User.findById(decoded.id);
+  next();
 });
 
 exports.isSeller = catchAsyncErrors(async (req, res, next) => {
