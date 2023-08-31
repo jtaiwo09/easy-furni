@@ -8,7 +8,7 @@ const sendToken = (user, statusCode, res) => {
     httpOnly: true,
     sameSite: "none",
     secure: true,
-    domain: "jtk-store.vercel.app",
+    domain: ".vercel.app",
     // domain:
     //   process.env.NODE_ENV !== "production"
     //     ? "localhost"
