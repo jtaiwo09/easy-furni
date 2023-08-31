@@ -7,9 +7,9 @@ import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 import CustomForm from "@/components/form/CustomForm";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAppSelector } from "@/redux/hook";
-import { signIn } from "next-auth/react";
-import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { login } from "@/redux/slices/userSlice";
+import Alert from "@mui/material/Alert";
 
 const schema = yup.object().shape({
   email: yup
@@ -26,9 +26,10 @@ export type LoginFormData = {
 
 function page() {
   const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.user);
+  const { isAuthenticated, error } = useAppSelector((state) => state.user);
   const [loader, setLoader] = useState(false);
   const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -43,17 +44,14 @@ function page() {
 
   const onSubmit = async (data: any, reset: any) => {
     setLoader(true);
-    const res = await signIn("credentials", {
-      ...data,
-      redirect: false,
-    });
-    setLoader(false);
-    if (res?.error) {
-      toast.error(res?.error);
-    } else {
-      toast.success("Login successful");
-      router.push("/");
-    }
+    dispatch(login(data))
+      .unwrap()
+      .then(() => {
+        setLoader(false);
+      })
+      .catch((err) => {
+        setLoader(false);
+      });
   };
 
   return (
@@ -62,6 +60,19 @@ function page() {
         <h2 className="text-[24px] leading-[24px] tracking-[0.5] text-[rgba(32,32,32,1)] font-bold mb-5">
           Login
         </h2>
+        <>
+          {error && (
+            <Alert severity="error" className="mb-5">
+              {error?.message}
+            </Alert>
+          )}
+
+          {isAuthenticated && (
+            <Alert severity="success" className="mb-5">
+              Logged in successfully
+            </Alert>
+          )}
+        </>
         <CustomForm
           schema={schema}
           onSubmit={onSubmit}

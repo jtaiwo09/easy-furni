@@ -13,6 +13,9 @@ import {
   updateUserPasswordApi,
 } from "@/services/user";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
 
 export interface UserState {
   loading: boolean;
@@ -126,6 +129,14 @@ export const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
+        cookies.set("token", action.payload.token, {
+          maxAge: 7 * 24 * 60 * 60,
+          path: "/",
+          domain:
+            process.env.NODE_ENV === "development"
+              ? "localhost"
+              : ".vercel.app",
+        });
         state.loading = false;
         state.error = null;
         state.user = action.payload.user;

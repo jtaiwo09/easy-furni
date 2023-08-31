@@ -14,7 +14,6 @@ import { usePathname } from "next/navigation";
 import { useAppSelector } from "@/redux/hook";
 import { HiOutlineReceiptRefund } from "react-icons/hi";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
 import Cookies from "universal-cookie";
 
 interface IProp {
@@ -29,7 +28,6 @@ function Sidebar({ extraClass }: IProp) {
   const handleLogout = async () => {
     const cookies = new Cookies();
     cookies.remove("token", { path: "/" });
-    await signOut({ callbackUrl: "/" });
   };
   const currentPath = useCallback(
     (path: string) => {

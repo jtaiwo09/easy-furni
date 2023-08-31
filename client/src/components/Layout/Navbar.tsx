@@ -25,7 +25,6 @@ import { useRouter } from "next/navigation";
 import { getUser } from "@/redux/slices/userSlice";
 import { getSeller } from "@/redux/slices/sellerSlice";
 import Image from "next/image";
-import { signOut, useSession } from "next-auth/react";
 import Cookies from "universal-cookie";
 
 function Navbar({ sellerToken }: { sellerToken: string | null }) {
@@ -43,21 +42,17 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
   const { cart } = useAppSelector((state) => state.cart);
   const { wishlist } = useAppSelector((state) => state.wishlist);
 
-  const { data: session, status } = useSession();
-
-  const auth = status === "authenticated";
-
-  console.log(session);
+  const cookies = new Cookies();
+  const token = cookies.get("token");
 
   useEffect(() => {
-    if (auth) {
-      const token = session?.user.userToken;
+    if (token) {
       dispatch(getUser());
     }
     if (sellerToken) {
       dispatch(getSeller());
     }
-  }, [auth, sellerToken]);
+  }, [token, sellerToken]);
 
   useEffect(() => {
     window.addEventListener("scroll", function () {
@@ -86,7 +81,7 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
   const handleLogout = async () => {
     const cookies = new Cookies();
     cookies.remove("token", { path: "/" });
-    await signOut({ callbackUrl: "/" });
+    window.location.reload();
   };
 
   const toggleCartModal = () => {
@@ -346,7 +341,7 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
                     Logout
                   </MenuItem>
                 ) : (
-                  <MenuItem component={Link} href="/api/auth/signin">
+                  <MenuItem component={Link} href="/login">
                     <ListItemIcon>
                       <LoginIcon fontSize="small" />
                     </ListItemIcon>
@@ -446,7 +441,7 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
           </li>
 
           <li className="w-fit" onClick={closeMobileNav}>
-            {auth ? (
+            {isAuthenticated ? (
               <button
                 className="bg-red-500 min-w-[100px] py-2 rounded-md text-white text-center text-sm font-medium"
                 onClick={handleLogout}
@@ -455,7 +450,7 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
               </button>
             ) : (
               <Link
-                href="/api/auth/signin"
+                href="/login"
                 className="font-medium text-sm min-w-[100px] bg-text-hover inline-block py-2 text-white rounded-md text-center"
               >
                 Login

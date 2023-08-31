@@ -6,7 +6,6 @@ import Navbar from "@/components/Layout/Navbar";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
 import Loading from "./loading";
-import Provider from "@/components/providers/Provider";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -24,15 +23,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={montserrat.className}>
-        <Provider>
-          <CustomThemeProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar sellerToken={sellerToken} />
-              <Suspense fallback={<Loading />}>{children}</Suspense>
-              <Footer />
-            </div>
-          </CustomThemeProvider>
-        </Provider>
+        <CustomThemeProvider>
+          <div className="flex flex-col min-h-screen">
+            <Navbar sellerToken={sellerToken} />
+            <Suspense fallback={<Loading />}>{children}</Suspense>
+            <Footer />
+          </div>
+        </CustomThemeProvider>
       </body>
     </html>
   );
