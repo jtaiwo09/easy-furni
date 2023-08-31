@@ -9,7 +9,10 @@ const sendToken = (user, statusCode, res) => {
     sameSite: "none",
     secure: true,
     path: "/",
-    domain: process.env.BASE_URL,
+    domain:
+      process.env.NODE_ENV == "development"
+        ? "localhost"
+        : "jtk-store.vercel.app",
   };
 
   res.status(statusCode).cookie("token", token, options).json({
