@@ -49,13 +49,13 @@ function Navbar({
   const { wishlist } = useAppSelector((state) => state.wishlist);
 
   useEffect(() => {
-    if (token) {
-      dispatch(getUser());
-    }
-    if (sellerToken) {
-      dispatch(getSeller());
-    }
-  }, [token, sellerToken]);
+    // if (token) {
+    dispatch(getUser());
+    // }
+    // if (sellerToken) {
+    dispatch(getSeller());
+    // }
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", function () {
