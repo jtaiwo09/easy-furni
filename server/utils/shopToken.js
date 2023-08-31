@@ -10,7 +10,7 @@ const sendShopToken = (user, statusCode, res) => {
     secure: true,
     path: "/",
     domain:
-      process.env.NODE_ENV == "development"
+      process.env.NODE_ENV !== "production"
         ? "localhost"
         : "jtk-store.vercel.app",
   };
