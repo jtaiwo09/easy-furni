@@ -3,11 +3,19 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 const userToken = cookies.get("token");
+const sellerToken = cookies.get("seller_token");
 
 export const userConfig = {
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${userToken}`,
+  },
+};
+
+export const sellerConfig = {
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${sellerToken}`,
   },
 };
 

@@ -1,4 +1,4 @@
-import { baseUrl } from "@/server";
+import { baseUrl, sellerConfig, userConfig } from "@/server";
 
 const fetchNewProduct = async (category: string) => {
   const res = await fetch(
@@ -10,12 +10,9 @@ const fetchNewProduct = async (category: string) => {
 const createProductApi = async (data: any) => {
   try {
     const res = await fetch(`${baseUrl}/product/create-product`, {
-      credentials: "include",
       method: "POST",
       body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      ...sellerConfig,
     });
     return res;
   } catch (error) {
@@ -27,12 +24,9 @@ const updateProductApi = async (data: any) => {
   const { productId, ...rest } = data;
   try {
     const res = await fetch(`${baseUrl}/product/update-product/${productId}`, {
-      credentials: "include",
       method: "PUT",
       body: JSON.stringify({ ...rest }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      ...sellerConfig,
     });
     return res;
   } catch (error) {
@@ -86,11 +80,8 @@ async function getAllProducts(filterObject = {}, page = 1, limit = 10) {
 async function createProductReviewApi(data: any) {
   const res = await fetch(`${baseUrl}/product/create-new-review`, {
     method: "PUT",
-    credentials: "include",
     body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...userConfig,
   });
   return res.json();
 }

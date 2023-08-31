@@ -2,7 +2,9 @@ import { SellerLoginFormData } from "@/app/(auth)/shop/login/page";
 import { loginSeller, logoutSeller } from "@/services/auth";
 import { getSellerApi } from "@/services/seller";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-// import Cookies from "universal-cookie";
+import Cookies from "universal-cookie";
+
+const cookies = new Cookies();
 
 export interface SellerState {
   loading: boolean;
@@ -64,8 +66,14 @@ export const sellerSlice = createSlice({
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
-        // const cookies = new Cookies();
-        // cookies.set("seller_token", action.payload.token);
+        cookies.set("seller_token", action.payload.token, {
+          maxAge: 7 * 24 * 60 * 60,
+          path: "/",
+          domain:
+            process.env.NODE_ENV === "development"
+              ? "localhost"
+              : "jtk-store.vercel.app",
+        });
         state.loading = false;
         state.error = null;
         state.seller = action.payload.seller;

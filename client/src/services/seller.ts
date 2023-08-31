@@ -1,10 +1,8 @@
-import { baseUrl } from "@/server";
+import { baseUrl, sellerConfig, userConfig } from "@/server";
 
 const getSellerApi = async () => {
   try {
-    const res = await fetch(`${baseUrl}/shop/get-seller`, {
-      credentials: "include",
-    });
+    const res = await fetch(`${baseUrl}/shop/get-seller`, sellerConfig);
     return res;
   } catch (error) {
     return error;
@@ -28,9 +26,7 @@ const getAllOrdersOfShop = async (shopId: string, page = 1, limit = 10) => {
 const getAllSellerAdminApi = async (page = 1, limit = 10) => {
   const res = await fetch(
     `${baseUrl}/shop/admin-all-sellers?page=${page}&limit=${limit}`,
-    {
-      credentials: "include",
-    }
+    userConfig
   );
   return res;
 };
@@ -39,7 +35,7 @@ const getAllSellerAdminApi = async (page = 1, limit = 10) => {
 const deleteSellerAdminApi = async (userId: string) => {
   const res = await fetch(`${baseUrl}/shop/delete-seller/${userId}`, {
     method: "DELETE",
-    credentials: "include",
+    ...userConfig,
   });
   return res;
 };

@@ -1,9 +1,4 @@
-import { SellerFormData } from "@/app/(seller)/dashboard/settings/page";
-import {
-  createBankAccountApi,
-  deleteBankAccountApi,
-  updateSellerInformationApi,
-} from "../seller/fetcher";
+import { createBankAccountApi, deleteBankAccountApi } from "../seller/fetcher";
 import { AddPaymentMethod } from "@/app/(seller)/dashboard/payment/page";
 
 // Update seller Info
