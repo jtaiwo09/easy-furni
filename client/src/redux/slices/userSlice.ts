@@ -135,7 +135,7 @@ export const userSlice = createSlice({
           domain:
             process.env.NODE_ENV === "development"
               ? "localhost"
-              : ".vercel.app",
+              : "jtk-store.vercel.app",
         });
         state.loading = false;
         state.error = null;

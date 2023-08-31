@@ -27,7 +27,13 @@ function Sidebar({ extraClass }: IProp) {
 
   const handleLogout = async () => {
     const cookies = new Cookies();
-    cookies.remove("token", { path: "/" });
+    cookies.remove("token", {
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "development"
+          ? "localhost"
+          : "jtk-store.vercel.app",
+    });
   };
   const currentPath = useCallback(
     (path: string) => {

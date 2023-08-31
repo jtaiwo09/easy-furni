@@ -52,6 +52,7 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
     if (sellerToken) {
       dispatch(getSeller());
     }
+    console.log("TOKEN", token);
   }, [token, sellerToken]);
 
   useEffect(() => {
@@ -80,7 +81,13 @@ function Navbar({ sellerToken }: { sellerToken: string | null }) {
 
   const handleLogout = async () => {
     const cookies = new Cookies();
-    cookies.remove("token", { path: "/" });
+    cookies.remove("token", {
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "development"
+          ? "localhost"
+          : "jtk-store.vercel.app",
+    });
     window.location.reload();
   };
 
