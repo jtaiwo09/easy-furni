@@ -37,7 +37,7 @@ const TextField = ({
           id={name}
           type={type === "password" ? (showPassword ? "text" : type) : type}
           placeholder={placeholder}
-          className={`leading-[30px] text-base border border-form-border pl-4 pr-5 py-[7px] shadow-none rounded-none bg-white w-full focus:outline-none ${inputClass}`}
+          className={`leading-[30px] text-sm border border-form-border pl-4 pr-5 py-[7px] shadow-none rounded-none bg-white w-full focus:outline-none ${inputClass}`}
           {...register(name)}
         />
         {type === "password" ? (

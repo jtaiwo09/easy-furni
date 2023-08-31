@@ -45,7 +45,8 @@ interface IProps {
 }
 
 function CustomThemeProvider({ children }: IProps) {
-  const isOnline = window.navigator.onLine;
+  const isOnline =
+    typeof window !== "undefined" ? window.navigator.onLine : true;
   if (!isOnline) return <NoInternet />;
 
   return (
