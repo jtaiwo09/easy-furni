@@ -12,13 +12,17 @@ exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
     const token = req.headers.authorization.split("Bearer ")[1];
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-      req.user = await User.findById(decoded.id);
-      next();
+      if (decoded.role === "user") {
+        req.user = await User.findById(decoded.id);
+        next();
+      } else {
+        next(new ErrorHandler("Unauthorised", 401));
+      }
     } else {
-      next(new ErrorHandler("Invalid Token", 400));
+      next(new ErrorHandler("Unauthorised", 401));
     }
   } else {
-    next(new ErrorHandler("No Token Found", 400));
+    next(new ErrorHandler("Unauthorised", 401));
   }
 });
 
@@ -33,6 +37,26 @@ exports.isSeller = catchAsyncErrors(async (req, res, next) => {
   req.seller = await Shop.findById(decoded.id);
 
   next();
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
+  ) {
+    const seller_token = req.headers.authorization.split("Bearer ")[1];
+    if (seller_token) {
+      const decoded = jwt.verify(seller_token, process.env.JWT_SECRET_KEY);
+      if (decoded.role === "Seller") {
+        req.seller = await Shop.findById(decoded.id);
+        next();
+      } else {
+        next(new ErrorHandler("Unauthorised", 401));
+      }
+    } else {
+      next(new ErrorHandler("Unauthorised", 401));
+    }
+  } else {
+    next(new ErrorHandler("Unauthorised", 401));
+  }
 });
 
 exports.isAdmin = (...roles) => {
