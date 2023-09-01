@@ -4,15 +4,15 @@ const sendShopToken = (user, statusCode, res) => {
 
   // Options for cookies
   const options = {
-    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     secure: true,
     path: "/",
-    domain:
-      process.env.NODE_ENV != "production"
-        ? "localhost"
-        : "jtkstore.vercel.app",
+    // domain:
+    //   process.env.NODE_ENV != "production"
+    //     ? "localhost"
+    //     : "jtkstore.vercel.app",
   };
   delete user._doc.password;
   res.cookie("seller_id", user._id.toString(), options);
