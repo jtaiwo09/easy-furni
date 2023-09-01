@@ -21,7 +21,6 @@ const loginUser = async (data: any) => {
     const res = await fetch(`${baseUrl}/user/login-user`, {
       method: "POST",
       body: JSON.stringify(data),
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

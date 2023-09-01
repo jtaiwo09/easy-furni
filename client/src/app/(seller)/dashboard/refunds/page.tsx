@@ -7,7 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useAppSelector } from "@/redux/hook";
 import { currencyConverter } from "@/utils/helperFunc";
 import Loader from "@/components/Layout/Loader";
-import { getAllOrdersOfShop, getAllUsersOrders } from "@/services/swr/order";
+import { getAllOrdersOfShop } from "@/services/swr/order";
 import { toast } from "react-toastify";
 
 function page() {

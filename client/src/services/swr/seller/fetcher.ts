@@ -1,13 +1,10 @@
-import { baseUrl } from "@/server";
+import { baseUrl, sellerConfig, userConfig } from "@/server";
 
 // Update seller info -- seller
 export const updateSellerInformationApi = async (data: any) => {
   const res = await fetch(`${baseUrl}/shop/update-seller-info`, {
     method: "PUT",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...sellerConfig,
     body: JSON.stringify(data),
   });
   const result = await res.json();
@@ -24,10 +21,7 @@ export const updateSellerInformationAdminApi = async (
 ) => {
   const res = await fetch(`${baseUrl}/shop/update-seller-info/${shopId}`, {
     method: "PUT",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...userConfig,
     body: JSON.stringify(data),
   });
   const result = await res.json();
@@ -41,10 +35,7 @@ export const updateSellerInformationAdminApi = async (
 export const updateSellerAvatarApi = async (avatar: string) => {
   const res = await fetch(`${baseUrl}/shop/update-shop-avatar`, {
     method: "PUT",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...sellerConfig,
     body: JSON.stringify({ avatar }),
   });
   const result = await res.json();
@@ -58,10 +49,7 @@ export const updateSellerAvatarApi = async (avatar: string) => {
 export const createBankAccountApi = async (withdrawMethod: any) => {
   const res = await fetch(`${baseUrl}/shop/update-payment-methods`, {
     method: "PUT",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...sellerConfig,
     body: JSON.stringify({ withdrawMethod }),
   });
   const result = await res.json();
@@ -75,10 +63,7 @@ export const createBankAccountApi = async (withdrawMethod: any) => {
 export const deleteBankAccountApi = async () => {
   const res = await fetch(`${baseUrl}/shop/delete-withdraw-method`, {
     method: "DELETE",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...sellerConfig,
   });
   const result = await res.json();
   if (res.ok) {
@@ -91,10 +76,7 @@ export const deleteBankAccountApi = async () => {
 export const createWithdrawalRequestApi = async (data: { amount: number }) => {
   const res = await fetch(`${baseUrl}/withdraw/create-withdraw-request`, {
     method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...sellerConfig,
     body: JSON.stringify(data),
   });
   const result = await res.json();
@@ -108,7 +90,7 @@ export const createWithdrawalRequestApi = async (data: { amount: number }) => {
 export const deleteSellerAdminApi = async (userId: string) => {
   const res = await fetch(`${baseUrl}/shop/delete-seller/${userId}`, {
     method: "DELETE",
-    credentials: "include",
+    ...userConfig,
   });
   const result = await res.json();
   if (res.ok) {

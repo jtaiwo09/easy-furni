@@ -1,4 +1,4 @@
-import { baseUrl } from "@/server";
+import { baseUrl, userConfig } from "@/server";
 
 // delete withdraal request --- for admin
 export const deleteWithdrawalRequestAdminApi = async ({
@@ -7,10 +7,7 @@ export const deleteWithdrawalRequestAdminApi = async ({
 }: any) => {
   const res = await fetch(`${baseUrl}/withdraw/delete-withdraw-request/${id}`, {
     method: "DELETE",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...userConfig,
     body: JSON.stringify({ sellerId }),
   });
   const result = await res.json();
@@ -27,10 +24,7 @@ export const updateWithdrawalRequestAdminApi = async ({
 }: any) => {
   const res = await fetch(`${baseUrl}/withdraw/update-withdraw-request/${id}`, {
     method: "PUT",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    ...userConfig,
     body: JSON.stringify({ sellerId }),
   });
   const result = await res.json();
