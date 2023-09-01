@@ -4,14 +4,12 @@ const sendToken = (user, statusCode, res) => {
 
   // Options for cookies
   const options = {
-    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     httpOnly: true,
     sameSite: "none",
+    path: "/",
     secure: true,
-    domain:
-      process.env.NODE_ENV !== "production"
-        ? "localhost"
-        : "jtk-store.vercel.app",
+    domain: process.env.NODE_ENV !== "production" ? "localhost" : ".vercel.app",
   };
 
   res.status(statusCode).cookie("token", token, options).json({

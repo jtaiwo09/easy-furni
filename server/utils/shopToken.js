@@ -10,9 +10,9 @@ const sendShopToken = (user, statusCode, res) => {
     secure: true,
     path: "/",
     domain:
-      process.env.NODE_ENV !== "production"
+      process.env.NODE_ENV != "production"
         ? "localhost"
-        : "jtk-store.vercel.app",
+        : "jtkstore.vercel.app",
   };
   delete user._doc.password;
   res.cookie("seller_id", user._id.toString(), options);
