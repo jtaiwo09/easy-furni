@@ -211,6 +211,7 @@ router.get(
 // get user order
 router.get(
   "/get-user-order/:orderId",
+  isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
       const order = await Order.findById(req.params.orderId);
