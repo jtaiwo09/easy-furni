@@ -51,6 +51,8 @@ function Navbar({
   const cookies = new Cookies();
 
   useEffect(() => {
+    const cookies = new Cookies();
+    console.log("Universal Cookies", cookies.get("token"));
     if (token) {
       dispatch(getUser());
     }

@@ -19,7 +19,7 @@ export const sellerConfig = {
   },
 };
 
-// const baseUrl = "http://localhost:8000/api/v1";
-const baseUrl = "https://jtk-store-api-v1.vercel.app/api/v1";
+const baseUrl = "http://localhost:8000/api/v1";
+// const baseUrl = "https://jtk-store-api-v1.vercel.app/api/v1";
 
 export { baseUrl };

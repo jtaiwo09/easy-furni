@@ -22,7 +22,7 @@ export default function RootLayout({
   const token = cookies().get("token")?.value ?? null;
   const sellerToken = cookies().get("seller_token")?.value ?? null;
 
-  // console.log("TOKEN", token);
+  console.log("TOKEN", token);
   return (
     <html lang="en">
       <body className={montserrat.className}>
