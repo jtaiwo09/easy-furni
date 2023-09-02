@@ -5,6 +5,8 @@ const cookies = new Cookies();
 const userToken = cookies.get("token");
 const sellerToken = cookies.get("seller_token");
 
+console.log("userToken", userToken);
+
 export const userConfig = {
   headers: {
     "Content-Type": "application/json",
