@@ -57,9 +57,6 @@ function page() {
   return (
     <div className="flex justify-center min-h-[calc(100vh-70px)]">
       <div className="px-4 w-[500px] mt-[15%] sm:mt-[10%]">
-        <h2 className="text-[24px] leading-[24px] tracking-[0.5] text-[rgba(32,32,32,1)] font-bold mb-5">
-          Login
-        </h2>
         <>
           {error && (
             <Alert severity="error" className="mb-5">
@@ -73,6 +70,9 @@ function page() {
             </Alert>
           )}
         </>
+        <h2 className="text-[24px] leading-[24px] tracking-[0.5] text-[rgba(32,32,32,1)] font-bold mb-5">
+          Login
+        </h2>
         <CustomForm
           schema={schema}
           onSubmit={onSubmit}

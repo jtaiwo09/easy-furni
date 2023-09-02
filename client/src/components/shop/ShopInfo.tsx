@@ -1,13 +1,12 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { logout } from "@/redux/slices/userSlice";
+import { useAppSelector } from "@/redux/hook";
 import { formatDate } from "@/utils/helperFunc";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { AiOutlineEdit } from "react-icons/ai";
-import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
 
 interface IProp {
   data: {
@@ -17,9 +16,10 @@ interface IProp {
   id: string;
 }
 
+const cookies = new Cookies();
+
 function ShopInfo({ data: { shop }, products, id }: IProp) {
   const { seller } = useAppSelector((state) => state.seller);
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const totalReviewsLength =
@@ -39,17 +39,14 @@ function ShopInfo({ data: { shop }, products, id }: IProp) {
   const isOwner = seller && seller._id === id;
 
   const handleLogout = () => {
-    dispatch(logout())
-      .unwrap()
-      .then((res) => {
-        if (res?.success) {
-          toast.success(res.message);
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+    cookies.remove("seller_token", {
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "development"
+          ? "localhost"
+          : "jtkstore.vercel.app",
+    });
+    window.location.href = "/";
   };
 
   return (

@@ -20,12 +20,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import CartDrawer from "../CartDrawer";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { toast } from "react-toastify";
 import WishlistDrawer from "../WishlistDrawer";
 import { useRouter } from "next/navigation";
-import { getUser, logout } from "@/redux/slices/userSlice";
+import { getUser } from "@/redux/slices/userSlice";
 import { getSeller } from "@/redux/slices/sellerSlice";
 import Image from "next/image";
+import Cookies from "universal-cookie";
 
 function Navbar({
   sellerToken,
@@ -48,10 +48,12 @@ function Navbar({
   const { cart } = useAppSelector((state) => state.cart);
   const { wishlist } = useAppSelector((state) => state.wishlist);
 
+  const cookies = new Cookies();
+
   useEffect(() => {
-    // if (token) {
-    dispatch(getUser());
-    // }
+    if (token) {
+      dispatch(getUser());
+    }
     // if (sellerToken) {
     dispatch(getSeller());
     // }
@@ -82,17 +84,14 @@ function Navbar({
   };
 
   const handleLogout = async () => {
-    dispatch(logout())
-      .unwrap()
-      .then((res) => {
-        if (res?.success) {
-          toast.success(res.message);
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+    cookies.remove("token", {
+      path: "/",
+      domain:
+        process.env.NODE_ENV === "development"
+          ? "localhost"
+          : "jtkstore.vercel.app",
+    });
+    window.location.href = "/";
   };
 
   const toggleCartModal = () => {

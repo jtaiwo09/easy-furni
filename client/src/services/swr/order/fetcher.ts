@@ -10,12 +10,7 @@ export const getAllUsersOrdersApi = async (url: string) => {
 };
 
 export const getUserOrderApi = async (url: string) => {
-  const res = await fetch(`${baseUrl}/${url}`, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const res = await fetch(`${baseUrl}/${url}`, userConfig);
   const result = await res.json();
   if (res.ok) {
     return result;

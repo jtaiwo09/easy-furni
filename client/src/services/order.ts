@@ -1,4 +1,4 @@
-import { baseUrl, sellerConfig } from "@/server";
+import { baseUrl, sellerConfig, userConfig } from "@/server";
 
 export const updateOrderStatus = async ({ id, status }: any) => {
   const res = await fetch(`${baseUrl}/order/update-order-status/${id}`, {
@@ -20,7 +20,7 @@ export const getAllUsersOrdersApi = async (userId: string) => {
 export const requestRefundApi = async (data: any) => {
   const res = await fetch(`${baseUrl}/order/order-refund`, {
     method: "PUT",
-    ...sellerConfig,
+    ...userConfig,
     body: JSON.stringify(data),
   });
   return await res.json();

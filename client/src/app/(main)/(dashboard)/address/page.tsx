@@ -156,7 +156,10 @@ function page() {
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
         {user.addresses.map((item) => (
-          <div className=" rounded-md shadow-sm bg-white border flex flex-col">
+          <div
+            key={item._id}
+            className=" rounded-md shadow-sm bg-white border flex flex-col"
+          >
             <div className={`px-4 py-5 ${item.default && "bg-primary/20 "}`}>
               <p className="">{item.address}</p>
               <p className="">{getAddressInfo(item.state, item.country)}</p>

@@ -1,10 +1,19 @@
 import { SellerLoginFormData } from "@/app/(auth)/shop/login/page";
-import { loginSeller, logoutSeller } from "@/services/auth";
+import { loginSeller } from "@/services/auth";
 import { getSellerApi } from "@/services/seller";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
+
+const cookiesOption = {
+  maxAge: 7 * 24 * 60 * 60,
+  path: "/",
+  domain:
+    process.env.NODE_ENV === "development"
+      ? "localhost"
+      : "jtkstore.vercel.app",
+};
 
 export interface SellerState {
   loading: boolean;
@@ -33,14 +42,6 @@ export const login = createAsyncThunk(
   }
 );
 
-export const logout = createAsyncThunk("seller/logout", async (_, thunkApi) => {
-  const response = (await logoutSeller()) as any;
-  if (!response.ok) {
-    return thunkApi.rejectWithValue(await response.json());
-  }
-  return await response.json();
-});
-
 export const getSeller = createAsyncThunk(
   "seller/get-seller",
   async (_, thunkApi) => {
@@ -66,33 +67,14 @@ export const sellerSlice = createSlice({
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
-        cookies.set("seller_token", action.payload.token, {
-          maxAge: 7 * 24 * 60 * 60,
-          path: "/",
-          domain:
-            process.env.NODE_ENV === "development"
-              ? "localhost"
-              : "jtk-store.vercel.app",
-        });
+        cookies.set("seller_id", action.payload.user._id, cookiesOption);
+        cookies.set("seller_token", action.payload.token, cookiesOption);
         state.loading = false;
         state.error = null;
         state.seller = action.payload.seller;
         state.isSeller = true;
       })
       .addCase(login.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(logout.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(logout.fulfilled, (state, action) => {
-        state.loading = false;
-        state.error = null;
-        state.seller = null;
-        state.isSeller = false;
-      })
-      .addCase(logout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

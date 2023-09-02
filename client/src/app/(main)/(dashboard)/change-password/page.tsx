@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { useAppDispatch } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { updateUserPassword } from "@/redux/slices/userSlice";
 import { toast } from "react-toastify";
 import TextField from "@/components/form/TextField";
@@ -28,6 +28,7 @@ const schema = yup.object().shape({
 
 function page() {
   const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.user);
   const {
     register,
     handleSubmit,
@@ -86,7 +87,12 @@ function page() {
           register={register}
           errors={errors}
         />
-        <CustomButton type="submit" text="Update" extraClass="mt-5" />
+        <CustomButton
+          loading={loading}
+          type="submit"
+          text="Update"
+          extraClass="mt-5"
+        />
       </form>
     </div>
   );

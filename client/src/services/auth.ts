@@ -1,4 +1,4 @@
-import { baseUrl } from "@/server";
+import { baseUrl, sellerConfig } from "@/server";
 
 const signup = async (data: any) => {
   try {
@@ -31,17 +31,6 @@ const loginUser = async (data: any) => {
   }
 };
 
-const logoutUser = async () => {
-  try {
-    const res = await fetch(`${baseUrl}/user/logout`, {
-      credentials: "include",
-    });
-    return res;
-  } catch (error) {
-    return error;
-  }
-};
-
 // Signup Seller
 const signupSeller = async (data: any) => {
   try {
@@ -64,10 +53,7 @@ const loginSeller = async (data: any) => {
     const res = await fetch(`${baseUrl}/shop/login`, {
       method: "POST",
       body: JSON.stringify(data),
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      ...sellerConfig,
     });
     return res;
   } catch (error) {
@@ -75,22 +61,4 @@ const loginSeller = async (data: any) => {
   }
 };
 
-const logoutSeller = async () => {
-  try {
-    const res = await fetch(`${baseUrl}/shop/logout`, {
-      credentials: "include",
-    });
-    return res;
-  } catch (error) {
-    return error;
-  }
-};
-
-export {
-  signup,
-  loginUser,
-  logoutUser,
-  signupSeller,
-  loginSeller,
-  logoutSeller,
-};
+export { signup, loginUser, signupSeller, loginSeller };

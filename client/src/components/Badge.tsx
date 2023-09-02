@@ -6,11 +6,11 @@ function Badge({ status }: { status: string }) {
       case "paid":
       case "success":
       case "delivered":
-        return "bg-green-100 text-green-600";
+        return "bg-green-200/80 text-green-600 border border-green-500";
       case "not paid":
-        return "bg-red-100 text-red-600";
+        return "bg-red-200/80 text-red-600 border border-red-500";
       default:
-        return "bg-orange-100 text-orange-600";
+        return "bg-orange-200/80 text-orange-600 border border-red-500";
     }
   }
   return (

@@ -1,6 +1,6 @@
 "use client";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import createTheme from "@mui/material/styles/createTheme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -45,9 +45,18 @@ interface IProps {
 }
 
 function CustomThemeProvider({ children }: IProps) {
-  const isOnline =
-    typeof window !== "undefined" ? window.navigator.onLine : true;
-  if (!isOnline) return <NoInternet />;
+  const [status, setStatus] = useState(window.navigator.onLine);
+
+  useEffect(() => {
+    window.addEventListener("online", () => {
+      setStatus(true);
+    });
+    window.addEventListener("offline", () => {
+      setStatus(false);
+    });
+  }, []);
+
+  if (!status) return <NoInternet />;
 
   return (
     <Provider store={store}>

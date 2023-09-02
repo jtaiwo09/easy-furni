@@ -65,8 +65,11 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
       };
       const res = await requestRefundApi(data);
       setLoading(false);
-      toast.success(res.message);
-      router.refresh();
+      if (res.success) {
+        setRefundModal(false);
+        toast.success(res.message);
+        router.refresh();
+      }
     } catch (error: any) {
       setLoading(false);
       toast.error(error.message);
@@ -209,7 +212,6 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
         <CustomButton
           text="Request A Return"
           extraClass="mt-4"
-          loading={loading}
           handleClick={() => setRefundModal(true)}
         />
       )}
@@ -309,10 +311,9 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
                     selectReturnItemHandler(item._id);
                   }}
                 >
-                  <Image
+                  <img
                     src={item?.images[0]?.url}
                     alt=""
-                    fill
                     className="h-full w-auto object-contain mix-blend-darken"
                   />
                   <div className="px-3">
@@ -333,7 +334,7 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
             <div className="mt-4">
               <label
                 htmlFor="reason"
-                className="text-xs uppercase font-medium mb-1 block"
+                className="text-xs uppercase font-semibold mb-1 block"
               >
                 Give Reasons
               </label>
@@ -347,6 +348,7 @@ function UserOrderDetail({ id, order }: { id: string; order: Order }) {
                 disabled={selectedItemForReturn.length < 1 || !reason}
                 text="Submit"
                 extraClass="mt-5"
+                loading={loading}
                 handleClick={refundHandler}
               />
             </div>

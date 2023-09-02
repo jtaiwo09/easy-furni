@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AiOutlineCamera } from "react-icons/ai";
-import { baseUrl } from "@/server";
+import { baseUrl, userConfig } from "@/server";
 import { toast } from "react-toastify";
 import { getUser, updateUserInformation } from "@/redux/slices/userSlice";
 import { BiLoader } from "react-icons/bi";
@@ -77,10 +77,7 @@ function page() {
     reader.onload = async (e: any) => {
       const res = await fetch(`${baseUrl}/user/update-avatar`, {
         method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        ...userConfig,
         body: JSON.stringify({ avatar: e.target.result }),
       });
       const result = await res.json();
